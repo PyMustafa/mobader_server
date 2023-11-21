@@ -1,0 +1,55 @@
+{% extends 'en/admin/base_template.html' %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}All Physiotherapist{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %} {% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+All Physiotherapist List
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<div class="row">
+    {% for physio in object_list %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-header">
+                <div class="article-image" data-background="{{physio.profile_pic}}"></div>
+                <div class="article-badge">
+                    <div class="article-badge-item bg-danger">
+                        <i class="fas fa-user-md"></i>
+                        {{ physio.auth_user_id.username }}
+                    </div>
+                </div>
+            </div>
+            <div class="article-details">
+                <p>{{ physio.auth_user_id.first_name }} {{ physio.auth_user_id.last_name }}</p>
+                <p>{{ physio.auth_user_id.email }}</p>
+                <p><span class="badge badge-info">Mobile: {{ physio.mobile_phone }}</span></p>
+
+                <div class="article-cta">
+                    <a href="{% url 'physio_update' physio.id %}" class="btn btn-warning">
+                        EDIT
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    {% endfor %}
+
+</div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %} {% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

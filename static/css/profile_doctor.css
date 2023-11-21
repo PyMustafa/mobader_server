@@ -1,0 +1,91 @@
+.profile_container{
+	margin-top: 6em !important;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	background: #EFF3F7;
+	padding: 1.75rem 2rem;
+}
+.profile_section{
+	width: 100%;
+	background-color: white;
+	border-radius: 1rem;
+	box-shadow: 0 5px 20px rgba(173,181,189,.2);
+	padding: 2.5rem 1.75rem;
+}
+.bookings-header-row{
+	display: flex;
+	align-items: center;
+}
+
+
+
+
+.booking_container{
+	width: 100%;
+	margin-top: 1em;
+}
+.booking-item{
+	width: 100%;
+	padding: 0;
+	background: #efefef4a;
+	border-radius: 8px;
+	margin-top: 1em;
+}
+.booking-col{
+	display: flex;
+	align-items: center;
+	padding: 0;
+}
+.booking-col-text-field{
+	padding: 0.75rem 1rem;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.booking-col > span,
+.booking-col > span > span{
+	font-family: lato;
+	direction: ltr;
+	text-align: right;
+}
+.booking-col > button{
+	height: 100%;
+	width: 100%;
+}
+
+
+.list > ul{
+	list-style: none;
+}
+.list > ul > li{
+	margin: 0 1rem;
+	margin-bottom: 0.5em;
+	direction: rtl;
+}
+.list > ul > li::before {
+  content: "\2022";
+  color: #1676A0;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: 5px;
+}
+.list > ul > li,
+.list > ul > li > a,
+.list > ul > li > a:visited{
+	color: rgb(33, 37, 41);
+	text-decoration: none;
+	transition: 0.3s;
+}
+.list > ul > li > a:is(:hover){
+	color: #098B98;
+	text-decoration: underline;
+}
+
+
+.modal-title{
+	margin-left: auto;
+}
+.btn-close{
+	margin-left: 1.5rem !important;
+}

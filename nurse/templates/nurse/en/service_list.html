@@ -1,0 +1,49 @@
+{% extends 'nurse/en/base_template.html' %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %} Service List {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %} {% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Service List
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<div class="row">
+    {% for service in nurseservice_list %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-details">
+                <h4>{{ service.title }}</h4>
+                <p>{{ service.details }}</p>
+                <p><span class="badge badge-primary">Price: {{ service.price }} SAR</span></p>
+                <div class="article-cta">
+                    <a href="{% url 'nurse_service_update' service.id %}" class="btn btn-warning">
+                        EDIT
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="{% url 'nurse_service_delete' service.id %}" class="btn btn-danger">
+                        Delete
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    {% endfor %}
+
+</div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %} {% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

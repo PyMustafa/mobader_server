@@ -1,0 +1,40 @@
+.doctor-box{
+	cursor: default !important;
+	position: relative;
+}
+.doctor-box:hover{
+	transform: none;
+}
+.doctor-box > button{
+	position: absolute;
+	top: 1em;
+	left: 1em;
+	border: none;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	color: red;
+}
+
+.button-container{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 0.5em;
+}
+.button-container > button{
+	margin: 0 0.3rem;
+}
+
+.notification{
+	width: 13rem;
+	height: 4em;
+	border-radius: 1rem;
+	position: sticky;
+	bottom: 2em;
+	left: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

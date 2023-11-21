@@ -1,0 +1,39 @@
+{% extends 'en/pages/base_portfolio_en.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/service_detail_en.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <section class="row" id="banner">
+        <div class="col-md-6 col-sm-12">
+            <img src="{% static '/pages/imgs/medical_services/service-nursing.webp' %}">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h5>Specialized Home Nursing Services</h5>
+            <p>
+                Home nursing services from Sidrah Care delivered within time and place of your preference. Our highly
+                skilled and efficient nursing staff is rigorously selected to provide many different care services.
+            </p>
+            <div class="row list">
+                <ul class="col-md-6 col-sm-12">
+                    <li>Administration of intravenous fluids</li>
+                    <li>Feeding tube care</li>
+                    <li>Urinary catheter care</li>
+                    <li>Breathing tube care</li>
+                    <li>Postoperative wounds care</li>
+                </ul>
+                <ul class="col-md-6 col-sm-12">
+                    <li>Bed sores care</li>
+                    <li>Elderly care</li>
+                    <li>Following up patients with paralysis or stroke</li>
+                    <li>Postpartum care</li>
+                    <li>Neonatal care</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

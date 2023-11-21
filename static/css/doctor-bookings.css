@@ -1,0 +1,41 @@
+.doctor-box{
+	cursor: default !important;
+}
+.doctor-box:hover{
+	transform: none;
+}
+.doctor-address-container{
+	margin-top: 5em;
+}
+
+
+.button-container{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 0.5em;
+}
+.button-container > button{
+	margin: 0 0.3rem;
+}
+
+.notification{
+	width: 13rem;
+	height: 4em;
+	border-radius: 1rem;
+	position: sticky;
+	bottom: 2em;
+	left: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.file_data_link{
+	color: rgb(60, 102, 140);
+	transition: 0.3s;
+}
+.file_data_link:hover{
+	color: rgb(44, 73, 100);
+}

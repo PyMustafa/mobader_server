@@ -1,0 +1,220 @@
+{% extends 'ar/pages/base_portfolio_ar.html' %}
+{% load static %}
+
+{% block head %}
+
+<link rel=" stylesheet" href="{% static '/pages/css/home_ar.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if sliders.count == 0 %}
+<main class="container">
+    <section class="row row-rev" id="banner">
+        <div class="col-md-6 col-sm-12">
+            <img src="{% static '/pages/imgs/home/banner.png' %}">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h5>نهتم بصحتك ونرعاك</h5>
+            <h2>خدمات طبيه وتمريضيه متكامله تقدم لك في منزلك تحت اشراف طبي معتمد</h2>
+        </div>
+
+    </section>
+</main>
+{% else %}
+<main class="container" id="slider">
+    <div id="carouselExampleAutoplaying" style="height: 35rem; width: 100%;" class="carousel slide"
+        data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 100%; width: 100%;">
+            {% for item in sliders %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}"
+                style="height: 100%; width: 100%;">
+                <section class="row" id="banner" style="height: 100%; width: 100%;">
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <img src="{{ item.thumbnail.url }}" alt="Item from Slider" height="80%" width="100%" />
+                    </div>
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <h5 class="animate__animated
+                                    {% if forloop.counter0 == 0 %}
+                                    animate__fadeInDown
+                                    {% endif %}
+                                    {% if forloop.revcounter == 1 %}
+                                    animate__zoomIn
+                                    {% endif %}
+                                    {% if forloop.revcounter == 2 %}
+                                    animate__slideInDown
+                                    {% endif %}
+                                    ">{{ item.title }}</h5>
+                        <h2>{{ item.description }}</h2>
+                    </div>
+                </section>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon btn-secondary"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon btn-secondary"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</main>
+{% endif %}
+<section class="container" id="services">
+    <h4>الخدمات</h4>
+    <p>تقديم الرعاية الصحية الأولية وقاية وعلاجاً وتأهيلاً </p>
+    <div class="row services-list g-3">
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_physio' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-1.png' %}" loading="lazy">
+                </div>
+                <h5>العلاج الطبيعي بالمنزل</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    احجز الان
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_nurse' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-2.png' %}" loading="lazy">
+                </div>
+                <h5>زيارة ممرضة بالمنزل</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    احجز الان
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_doctor' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-3.png' %}" loading="lazy">
+                </div>
+                <h5>زيارة طبيب بالمنزل</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    احجز الان
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_meeting' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>استشارة فورية</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    احجز الان
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_medicine' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>الصيدليه</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    احجز الان
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_analytic' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>معمل التحاليل</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    احجز الان
+                </div>
+            </section>
+        </a>
+    </div>
+</section>
+
+{% if images %}
+<section class="gallery">
+    <h4>معرض الصور</h4>
+    <div class="container row services-list g-1" id=gallery>
+        {% for image in images %}
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{{ image.thumbnail.url }}" alt="Gallery Image" />
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section class="steps">
+    <h5>سهلناها عليك</h5>
+    <h2>طلبك في 3 خطوات بس</h2>
+    <section class="row steps-caros gx-3">
+        <div class="col-md-4 col-sm-12">
+            <div class="steps-item">
+                <h3 class="number-title">1</h3>
+                <h3>سجل</h3>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="steps-item">
+                <h3 class="number-title">2</h3>
+                <h3>حدد موعد</h3>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="steps-item">
+                <h3 class="number-title">3</h3>
+                <h3>تناول علاجك</h3>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

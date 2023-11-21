@@ -1,0 +1,200 @@
+{% extends 'en/patient/base_template.html' %} {% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %} Pharmacy Medicine {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/pages/css/book-service.css' %}" />
+<link rel="stylesheet" href="{% static '/pages/css/home_en.css' %}" />
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %} Pharmacy Medicine {% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+
+<form class="service-type-container" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="service-form-container">
+    <div class="col-md-6 col-sm-12">
+      <label class="form-label" for="service_choices_select">Service Type :&nbsp;<span
+          style="color: red">*</span></label>
+      <br />
+      <select class="form-select" id="service_choices_select" name="service_type" disabled>
+        <option value="{{service_type}}">{{service_type}}</option>
+      </select>
+    </div>
+    <div class="col-md-6 col-sm-12">
+      <br />
+      <label class="form-label" for="service_choices_types_select">Pharmacy:&nbsp;<span
+          style="color: red">*</span></label>
+      <br />
+      <select class="form-select" id="category_choices_types_select" name="category_class" onchange="getMedicines()"
+        required>
+        <option value="0">None</option>
+        {% for pharma in pharmas %}
+        <option value="{{ pharma.id }}">{{ pharma.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="service-form-container">
+    <h4>Medicines</h4>
+    <div id="medicines"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-3">
+      <a class="btn btn-secondary" href="{% url 'patient_all_services' %}">Cancel</a>
+    </div>
+    <div class="col-6">
+      <button class="btn btn-primary" type="submit" disabled onclick="stripe(true)">
+        Book and Pay Now
+      </button>
+    </div>
+    <div class="col-3">
+      <button class="btn btn-danger" type="submit" disabled onclick="stripe(false)">
+        Book and Pay Later
+      </button>
+    </div>
+  </div>
+
+  <input type="number" hidden name="medicine_pk" />
+  <input type="checkbox" hidden name="payment_stripe" />
+</form>
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+<script>
+  let selected_pharma;
+  async function getMedicines() {
+    const api = `{% url 'list_medicines' %}`;
+    const pharma_id = document.querySelector(
+      "#category_choices_types_select"
+    ).value;
+    selected_pharma = pharma_id;
+    await fetch(api, {
+      method: "POST",
+      body: JSON.stringify({ pharma_id: pharma_id }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        if (json.medicines) {
+          const medicines = document.querySelector("#medicines");
+          medicines.innerHTML = "";
+          if (json.medicines.length > 0) {
+            json.medicines.forEach((medicine) => {
+              const html = `
+							<div key="${medicine["id"]}">
+								<div class="doctor-box">
+									<div class="row row-margin">
+										<div class="col-2 doctor-img-container">
+											<img src="/media/${medicine["photo"]}">
+										</div>
+										<div class="col-4 doctor-data-container">
+										    <h5>${medicine["name"]}</h5>
+										    <h6>Price: ${medicine["price"]} SAR</h6>
+										    <h6>Count: ${medicine["count"]}</h6>
+                        <hr />
+										</div>
+                    <div class="col-4 doctor-data-container">
+										    <h5>Pharmacy Details:</h5>
+										    <h6>Address: ${medicine["address"]}</h6>
+										    <h6>Phone: ${medicine["phone"]}</h6>
+                        <hr />
+										</div>
+									</div>
+								</div>		
+							</div>
+						`;
+              const medicines = document.querySelector("#medicines");
+              medicines.innerHTML += html;
+            });
+          }
+        }
+      });
+  }
+
+  let selected_medicine;
+
+  function validateForm(selected_medicine) {
+    const submitBtns = Array.from(
+      document.querySelectorAll("button[type='submit']")
+    );
+    if (selected_medicine <= 0) {
+      submitBtns.forEach((btn) => {
+        btn.disabled = true;
+      });
+    } else {
+      submitBtns.forEach((btn) => {
+        btn.disabled = false;
+      });
+    }
+  }
+
+  function stripe(bool) {
+    const stripePayment = document.querySelector(
+      "input[name='payment_stripe']"
+    );
+    stripePayment.checked = bool;
+  }
+
+  document.addEventListener("click", (event) => {
+    const medicines_div = document.querySelector("#medicines");
+
+    if (
+      event.target == medicines_div ||
+      (medicines_div.contains(event.target) &&
+        medicines_div.children[0].tagName != "H4")
+    ) {
+      Array.from(medicines_div.children).forEach((child) => {
+        const selectedMedicineInput = document.querySelector(
+          "input[name='medicine_pk']"
+        );
+        if (child.contains(event.target)) {
+          selected_medicine = parseInt(child.attributes.key.value);
+          selectedMedicineInput.value = selected_medicine;
+          child.children[0].classList.add("selected");
+        } else {
+          child.children[0].classList.remove("selected");
+        }
+
+        if (!document.querySelector(".selected")) {
+          selected_medicine = 0;
+          selectedMedicineInput.value = "";
+        }
+      });
+    }
+  });
+
+  document.addEventListener("click", (ev) => {
+    validateForm(selected_medicine);
+  });
+  document.addEventListener("input", (ev) => {
+    validateForm(selected_medicine);
+  });
+
+  function updateListiners() {
+    const imgs = document.querySelectorAll("img");
+    Array.from(imgs).forEach((img) => {
+      img.onerror = function () {
+        const anon_img = `{% static 'imgs/anon.webp' %}`;
+        this.src = anon_img;
+      };
+    });
+  }
+</script>
+
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

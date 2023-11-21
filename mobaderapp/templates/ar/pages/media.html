@@ -1,0 +1,178 @@
+{% extends 'ar/pages/base_portfolio_ar.html' %}
+{% load static %}
+
+{% block head %}
+
+<link rel=" stylesheet" href="{% static '/pages/css/home_ar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="container">
+    <section id="services">
+        <h4>المركز الاعلامي</h4>
+        <div class="row services-list g-3 mb-4">
+            <div class="col-md-4 col-sm-12">
+                <section>
+                    <iframe width=" 100%" height="250rem"
+                        src="https://www.youtube.com/embed/oVPtiy-RWAY?si=BGeAbMBSX8yG0p4T" title="YouTube video player"
+                        frameborder="2"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                    <br>
+                    <h6 style="text-align: center;">عنوان متغير</h6>
+                </section>
+
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <section>
+                    <iframe width=" 100%" height="250rem"
+                        src="https://www.youtube.com/embed/oVPtiy-RWAY?si=BGeAbMBSX8yG0p4T" title="YouTube video player"
+                        frameborder="2"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                    <br>
+                    <h6 style="text-align: center;">عنوان متغير</h6>
+                </section>
+
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <section>
+                    <iframe width=" 100%" height="250rem"
+                        src="https://www.youtube.com/embed/oVPtiy-RWAY?si=BGeAbMBSX8yG0p4T" title="YouTube video player"
+                        frameborder="2"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                    <br>
+                    <h6 style="text-align: center;">عنوان متغير</h6>
+                </section>
+
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<section class="container" id="services">
+    <h4>الفريق الطبي</h4>
+    <div id="carouselExampleAutoplaying" style="height: 35rem; width: 100%;" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 100%; width: 100%;">
+            {% for item in sliders %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}" style="height: 100%; width: 100%;">
+                <section class="row" id="banner" style="height: 100%; width: 100%;">
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <img src="{{ item.thumbnail.url }}" alt="Item from Slider" height="80%" width="100%" />
+                    </div>
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <h5 class="animate__animated
+                                        {% if forloop.counter0 == 0 %}
+                                        animate__fadeInDown
+                                        {% endif %}
+                                        {% if forloop.revcounter == 1 %}
+                                        animate__zoomIn
+                                        {% endif %}
+                                        {% if forloop.revcounter == 2 %}
+                                        animate__slideInDown
+                                        {% endif %}
+                                        ">{{ item.title }}</h5>
+                        <h2>{{ item.description }}</h2>
+                    </div>
+                </section>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon btn-secondary"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon btn-secondary"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<section class="container" id="services">
+    <h4>ابرز الخدمات والاحداث</h4>
+    <div id="carouselExampleAutoplaying" style="height: 35rem; width: 100%;" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 100%; width: 100%;">
+            {% for item in sliders %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}" style="height: 100%; width: 100%;">
+                <section class="row" id="banner" style="height: 100%; width: 100%;">
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <img src="{{ item.thumbnail.url }}" alt="Item from Slider" height="80%" width="100%" />
+                    </div>
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <h5 class="animate__animated
+                                        {% if forloop.counter0 == 0 %}
+                                        animate__fadeInDown
+                                        {% endif %}
+                                        {% if forloop.revcounter == 1 %}
+                                        animate__zoomIn
+                                        {% endif %}
+                                        {% if forloop.revcounter == 2 %}
+                                        animate__slideInDown
+                                        {% endif %}
+                                        ">{{ item.title }}</h5>
+                        <h2>{{ item.description }}</h2>
+                    </div>
+                </section>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon btn-secondary"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon btn-secondary"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<section class="container" id="services">
+    <h4>عروضنا</h4>
+    <div id="carouselExampleAutoplaying" style="height: 35rem; width: 100%;" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 100%; width: 100%;">
+            {% for item in sliders %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}" style="height: 100%; width: 100%;">
+                <section class="row" id="banner" style="height: 100%; width: 100%;">
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <img src="{{ item.thumbnail.url }}" alt="Item from Slider" height="80%" width="100%" />
+                    </div>
+                    <div class="col-md-6 col-sm-12" style="height: 100%; width: 50%;">
+                        <h5 class="animate__animated
+                                        {% if forloop.counter0 == 0 %}
+                                        animate__fadeInDown
+                                        {% endif %}
+                                        {% if forloop.revcounter == 1 %}
+                                        animate__zoomIn
+                                        {% endif %}
+                                        {% if forloop.revcounter == 2 %}
+                                        animate__slideInDown
+                                        {% endif %}
+                                        ">{{ item.title }}</h5>
+                        <h2>{{ item.description }}</h2>
+                    </div>
+                </section>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon btn-secondary"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon btn-secondary"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+{% endblock %}

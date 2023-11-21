@@ -1,0 +1,144 @@
+{% extends 'en/admin/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Dashboard
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Dashboard
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<!-- Reports All Users-->
+<div class="row">
+    <!--Staff-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-primary">
+                <i class="fas fa-user-ninja"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Staff</h4>
+                </div>
+                <div class="card-body">
+                    {{num_staff}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Doctors-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-danger">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Doctors</h4>
+                </div>
+                <div class="card-body">
+                    {{num_doctors}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Nurse-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-warning">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Nurses</h4>
+                </div>
+                <div class="card-body">
+                    {{num_nurses}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Physiotherapist-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-success">
+                <i class="fas fa-walking"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Physiotherapist</h4>
+                </div>
+                <div class="card-body">
+                    {{num_physiotherapist}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Laboratory-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-primary">
+                <i class="fas fa-microscope"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Laboratory</h4>
+                </div>
+                <div class="card-body">
+                    {{num_laps}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Pharmacy-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-danger">
+                <i class="fas fa-vial"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Pharmacy</h4>
+                </div>
+                <div class="card-body">
+                    {{num_pharmacy}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Patient-->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="card card-statistic-1">
+            <div class="card-icon bg-warning">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="card-wrap">
+                <div class="card-header">
+                    <h4>Patient</h4>
+                </div>
+                <div class="card-body">
+                    {{num_patients}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

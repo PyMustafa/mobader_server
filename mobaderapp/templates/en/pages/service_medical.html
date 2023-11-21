@@ -1,0 +1,42 @@
+{% extends 'en/pages/base_portfolio_en.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/service_detail_en.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <section class="row" id="banner">
+        <div class="col-md-6 col-sm-12">
+            <img src="{% static '/pages/imgs/medical_services/service-medical.jpg' %}">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h5>Residential and Home Medical Healthcare Services</h5>
+            <p>
+                Sedrah Care staff is widely experienced in children of different ages, helping them in daily life
+                activities. These care plans are set by a team of specialized nurses to guarantee a high quality
+                healthcare service.
+            </p>
+            <div class="row list">
+                <ul class="col-md-6 col-sm-12">
+                    <li>Drug administration according to the prescription in a well framed timeline.</li>
+                    <li>Feeding, oral or via tubes.</li>
+                    <li>Neonatal care.</li>
+                    <li>Follow-up of vital signs.</li>
+                    <li>Urinary catheter care.</li>
+                </ul>
+                <ul class="col-md-6 col-sm-12">
+                    <li>Electronic documentation of the patients records, so that they can be viewed by the concerned
+                        relatives.
+                    </li>
+                    <li>Care for patient’s hygiene</li>
+                    <li>Diaper changing</li>
+                    <li>Bathing</li>
+                    <li>Nails care</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

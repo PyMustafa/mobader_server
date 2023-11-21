@@ -1,0 +1,65 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path(
+        "",
+        views.dashboard,
+        name="pharma_dashboard",
+    ),
+    path(
+        "medicines_list/",
+        views.MedicineListView.as_view(),
+        name="pharma_medicine_list",
+    ),
+    path(
+        "medicine_create/",
+        views.MedicineCreate.as_view(),
+        name="pharma_medicine_create",
+    ),
+    path(
+        "medicine_update/<int:pk>/",
+        views.MedicineUpdate.as_view(),
+        name="pharma_medicine_update",
+    ),
+    path(
+        "medicine_delete/<int:pk>/",
+        views.MedicineDeleteView.as_view(),
+        name="pharma_medicine_delete",
+    ),
+    path(
+        "pharma_detail/",
+        views.PharmaDetailListView.as_view(),
+        name="pharma_detail",
+    ),
+    path(
+        "pharma_detail_create/",
+        views.PharmaDetailCreate.as_view(),
+        name="pharma_detail_create",
+    ),
+    path(
+        "pharma_detail_update/<int:pk>/",
+        views.PharmaDetailUpdate.as_view(),
+        name="pharma_detail_update",
+    ),
+    path(
+        "pharma_detail_delete/<int:pk>/",
+        views.PharmaDetialDeleteView.as_view(),
+        name="pharma_detail_delete",
+    ),
+    path(
+        "booking_pending/",
+        views.booking_pending,
+        name="pharma_booking_pending",
+    ),
+    path(
+        "booking_update/<int:pk>/",
+        views.BookingUpdate.as_view(),
+        name="pharma_booking_update",
+    ),
+    path(
+        "booking_list/",
+        views.booking_list,
+        name="pharma_booking_list",
+    ),
+]

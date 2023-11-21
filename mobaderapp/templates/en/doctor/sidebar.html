@@ -1,0 +1,76 @@
+{% load static %}
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{% url 'doctor_dashboard' %}"><img src="{% static '/img/logo.png' %}" style="height: 85px;"/></a>
+        </div>
+        <br>
+        <div class="sidebar-brand sidebar-brand-sm">
+            <a href="{% url 'doctor_dashboard' %}">MO</a>
+        </div>
+        <br>
+        <ul class="sidebar-menu">
+            <li class="menu-header">Dashboard</li>
+
+            <!--Home-->
+            {% url 'doctor_dashboard' as doctor_dashboard %}
+            <li class="{% if request.path == doctor_dashboard %}active{% endif %}">
+                <a href="{% url 'doctor_dashboard' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Doctor Home</span>
+                </a>
+            </li>
+
+            <!-- Appointments -->
+            {% url 'appoint_update' id as appoint_update %}
+            {% url 'appoint_list' as appoint_list %}
+            {% url 'appoint_add' as appoint_add %}
+            <li class="dropdown {% if request.path == appoint_update %}active{% endif %}{% if request.path == appoint_list %}active{% endif %}{% if request.path == appoint_add %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == appoint_list %}active{% endif %}{% if request.path == appoint_update %}active{% endif %}">
+                        <a href="{% url 'appoint_list' %}" class="nav-link">
+                            My Appointments
+                        </a>
+                    </li>
+                    <li class="{% if request.path == appoint_add %}active{% endif %}">
+                        <a href="{% url 'appoint_add' %}" class="nav-link">
+                            New Appointment
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Bookings -->
+            {% url 'doctor_booking_pending' as booking_pending %}
+            {% url 'doctor_booking_list' as booking_list %}
+            {% url 'doctor_booking_update' id as booking_update %}
+            <li class="dropdown {% if request.path == booking_pending %}active{% endif %}{% if request.path == booking_list %}active{% endif %}{% if request.path == booking_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-list"></i>
+                    <span>Bookings</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == booking_pending %}active{% endif %}{% if request.path == booking_update %}active{% endif %}">
+                        <a href="{% url 'doctor_booking_pending' %}" class="nav-link">
+                            Pending Bookings
+                        </a>
+                    </li>
+                    <li class="{% if request.path == booking_list %}active{% endif %}">
+                        <a href="{% url 'doctor_booking_list' %}" class="nav-link">
+                            All Bookings
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+        </ul>
+        <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+            <a href="{% url 'users_logout_process' %}" class="btn btn-danger btn-lg btn-block btn-icon-split">
+                <i class="fas fa-sign-out-alt"></i>LOGOUT
+            </a>
+        </div>
+    </aside>
+</div>

@@ -1,0 +1,147 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 600;
+}
+
+/*
+======================================
+NavBar
+======================================
+*/
+nav {
+	background: white;
+	max-height: 5em;
+}
+
+#navbarSupportedContent {
+	background: white;
+}
+
+.fluid-extra {
+	padding: 0 24px 0 24px;
+}
+
+.navbar-brand {
+	max-width: 8rem;
+	padding: 0;
+	margin-right: 1rem;
+}
+
+.navbar-brand>img {
+	max-width: 4rem;
+	margin: 0;
+}
+
+.me-auto-left {
+	margin-right: auto !important;
+}
+
+.nav-item {
+	margin: 0 0.5rem 0 0.5rem;
+}
+
+.nav-link {
+	font-size: 16px;
+	color: rgb(116, 123, 129);
+	border-bottom: 1px solid transparent;
+	font-weight: 700;
+}
+
+.nav-link:is(:hover, :focus) {
+	color: #62045c;
+	border-bottom: 1px solid #62045c;
+}
+
+.active {
+	color: #62045c !important;
+	border-bottom: 2px solid #62045c !important;
+}
+
+/*
+======================================
+Footer Section
+======================================
+*/
+footer {
+	background: linear-gradient(117.85deg, rgb(129, 34, 142), #62045c);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding: 1em 0 0.5em 0;
+	width: 100%;
+}
+
+footer>section>div {
+	height: 350px;
+}
+
+.steps-caros {
+	flex-direction: row !important;
+}
+
+.footer-title {
+	color: white;
+	text-align: left;
+	margin-right: 5rem;
+	margin-bottom: 1em;
+}
+
+.footer-button {
+	margin-left: 4rem;
+	border-radius: 24px;
+	background: white;
+	border: none;
+	padding: 0.7rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 10rem;
+	margin-bottom: 1em;
+	transition: 0.3s;
+}
+
+.footer-button:hover {
+	background: #1977CC;
+}
+
+.contact-field {
+	margin-left: 4rem;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 1em;
+}
+
+.contact-icon-field {
+	width: 40px;
+	height: 40px;
+	background: white;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.contact-text-field {
+	margin: 0;
+	margin-right: 8px;
+	font-weight: 550;
+	color: white;
+}
+
+.rights-reserved {
+	border-top: 1px solid #fe8065;
+	width: 90%;
+	text-align: center;
+	color: white;
+	padding: 2rem;
+}
+
+.rights-reserved>h5 {
+	font-weight: 550;
+}

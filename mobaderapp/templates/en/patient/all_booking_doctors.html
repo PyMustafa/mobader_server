@@ -1,0 +1,63 @@
+
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Booking Doctors
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/pages/css/home_en.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Booking Doctors
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+
+
+
+
+    <h3>All Booking Doctors</h3>
+    <div class="row">
+        {% for bookdoctor in bookdoctors %}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <article class="article article-style-b">
+                <div class="article-header">
+                    <div class="article-image" data-background="{{bookdoctor.doctor.profile_pic}}"></div>
+                    <div class="article-badge">
+                        <div class="article-badge-item bg-danger">
+                            <i class="fas fa-fire"></i>
+                            {{ bookdoctor.doctor.auth_user_id }}
+                        </div>
+                    </div>
+                </div>
+                <div class="article-details">
+                    <p><span class="badge badge-{% if bookdoctor.status == 'ACC'%}primary{% elif bookdoctor.status == 'PEN' %}warning{% else %}danger{%endif%}">Status: {% if bookdoctor.status == "ACC"%}Accepted{% elif bookdoctor.status == "PEN" %}Pending{% else %}Refused{%endif%}</span></p>
+                    <p>{{ bookdoctor.book_time.start_time }}</p>
+                    <p><span class="badge badge-primary">Paid: {% if bookdoctor.is_paid %}Yes{% else %}No{% endif %}</span></p>
+                    <p><span class="badge badge-info">Type: {{ bookdoctor.book_type }}</span></p>
+                    {% if bookdoctor.book_type == 'meet' %}
+                    <p><span class="badge badge-secondary">Meeting Room: {% if bookdoctor.status == 'ACC' %}<a href="{% url 'meeting_room' bookdoctor.meeting_room  %}">{{ bookdoctor.meeting_room }}</a>{% endif %}</span></p>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

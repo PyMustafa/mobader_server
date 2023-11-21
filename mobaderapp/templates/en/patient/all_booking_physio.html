@@ -1,0 +1,60 @@
+
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Booking Physiotherapist
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/pages/css/home_en.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Booking Physiotherapist
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+
+
+
+
+    <h3>All Booking Physiotherapist</h3>
+    <div class="row">
+        {% for book in bookphysio %}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <article class="article article-style-b">
+                <div class="article-header">
+                    <div class="article-image" data-background="{{book.physio.profile_pic}}"></div>
+                    <div class="article-badge">
+                        <div class="article-badge-item bg-danger">
+                            <i class="fas fa-fire"></i>
+                            {{ book.physio.auth_user_id }}
+                        </div>
+                    </div>
+                </div>
+                <div class="article-details">
+                    <p><span class="badge badge-{% if book.status == 'ACC'%}primary{% elif book.status == 'PEN' %}warning{% else %}danger{%endif%}">Status: {% if book.status == "ACC"%}Accepted{% elif book.status == "PEN" %}Pending{% else %}Refused{%endif%}</span></p>
+                    <p>Day: {{ book.time.day }}</p>
+                    <p>Time: {{ book.time.start_time }}</p>
+    
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

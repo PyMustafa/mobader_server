@@ -1,0 +1,36 @@
+{% extends 'en/pages/base_portfolio_en.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/medical_services_en.css' %}">
+{% endblock %}
+
+{% block content %}
+	<section class="steps">
+		<section class="row steps-caros gx-3">
+			<div class="col-md-6 col-sm-12 j-center">
+				<div class="steps-item">
+					<img src="{% static '/pages/imgs/medical_services/medical_services.jpg' %}" class="img-title">
+					<h4>Residential and Home Medical Healthcare Services</h4>
+					<p>
+						Sedrah Care staff is widely experienced in children of different ages, helping them in daily life activities. These care plans are set by a team of specialized nurses to guarantee a high quality healthcare service. 
+					</p>
+					<a href="{% url 'service_medical_en' %}" class="read-more-button">
+						Read More
+					</a>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-12 j-center">
+				<div class="steps-item">
+					<img src="{% static '/pages/imgs/medical_services/medical_services.jpg' %}" class="img-title">
+					<h4>Specialized Home Nursing Services</h4>
+					<p>
+						Home nursing services from Sidrah Care delivered within time and place of your preference. Our highly skilled and efficient nursing staff is rigorously selected to provide many different care services.
+					</p>
+					<a href="{% url 'service_nursing_en' %}" class="read-more-button">
+						Read More
+					</a>
+				</div>
+			</div>
+		</section>
+{% endblock %}

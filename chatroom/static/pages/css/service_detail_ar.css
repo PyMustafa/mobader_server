@@ -1,0 +1,66 @@
+/*
+======================================
+Banner Section
+======================================
+*/
+main {
+	width: 100%;
+	margin-top: 7.5em !important;
+	margin-bottom: 3.5em !important;
+}
+
+.row {
+	flex-direction: row-reverse;
+}
+
+#banner>div:first-child {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#banner>div>img {
+	width: 100%;
+	transform: rotateY(180deg);
+	border-radius: 24px;
+	margin-bottom: 1em;
+}
+
+#banner>div:nth-child(2) {
+	display: flex;
+	flex-direction: column;
+	direction: rtl;
+	justify-content: center;
+	text-align: right;
+}
+
+#banner>div:nth-child(2)>p {
+	font-family: sedrahcare;
+	color: #444444;
+	margin-top: 5px;
+}
+
+#banner>div:nth-child(2)>h5 {
+	font-family: sedrahcare-bold;
+	color: #098B98;
+}
+
+.list {
+	flex-direction: row !important;
+}
+
+.list>ul {
+	list-style: none;
+}
+
+.list>ul>li {
+	margin-bottom: 1em;
+}
+
+.list>ul>li::before {
+	content: "\2022";
+	color: #1676A0;
+	font-weight: bold;
+	display: inline-block;
+	width: 1em;
+}

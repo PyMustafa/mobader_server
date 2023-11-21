@@ -1,0 +1,119 @@
+/* =============================
+Service Type Section
+============================= */
+.service-type-container{
+	margin-top: 6em !important;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background: #EFF3F7;
+	padding: 1.75rem 2rem;
+}
+.service-form-container,
+.slots-form-container{
+	width: 100%;
+	background-color: white;
+	border-radius: 1rem;
+	box-shadow: 0 5px 20px rgba(173,181,189,.2);
+	padding: 2.5rem 1.75rem;
+	margin-bottom: 1em;
+}
+.service-form-container > h4,
+.slots-form-container > h4,
+.unsuported{
+	font-family: sedrahcare-bold;
+	color: #2C4964;
+	text-align: right;
+	margin-bottom: 1em;
+}
+.unsuported{
+	text-align: center;
+}
+.service-form-container > div{
+	flex-direction: row-reverse;
+}
+.service-form-container > div > div{
+	direction: rtl;
+}
+.form-label{
+	margin-bottom: 5px;
+}
+.form-select, .form-input{
+	padding: 0.6rem;
+	background: transparent;
+	line-height: 1.5;
+	color: #6c757d;
+	border: 2px solid #ced4da;
+	border-radius: 0.3rem;
+	width: 100%;
+	height: 3em;
+}
+.form-button{
+	width: 100%;
+	height: 3em;
+	border-radius: 0.3rem;
+	border: none;
+	transition: 0.3s;
+}
+
+
+
+
+.doctor-box{
+	background: #efefef4a;
+	padding: 1rem;
+	border-radius: 12px;
+	transition: 0.3s;
+	cursor: pointer;
+	border: 2px solid transparent;
+}
+.doctor-box:hover{
+	transform: scale(1.05);
+}
+.doctor-img-container{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.doctor-img-container > img{
+	width: 90%;
+	border-radius: 50%;
+}
+.doctor-data-container > *{
+	margin-bottom: 1em;
+	direction: rtl;
+}
+.doctor-data-container > h5{
+	color: #2C4964;
+	font-family: sedrahcare-bold;
+}
+.row-margin{
+	margin-bottom: 2em;
+}
+.selected{
+	border: 2px solid #ced4da;
+}
+
+.slot-container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.slot-container > select,
+.slot-container > textarea{
+	padding: 0.6rem;
+	background: transparent;
+	line-height: 1.5;
+	color: #6c757d;
+	border: 2px solid #ced4da;
+	border-radius: 0.3rem;
+	width: 100%;
+	height: 3em;
+	direction: rtl;
+}
+
+.col-6 > *,
+.col-3 > *{
+	width: 100%;
+}

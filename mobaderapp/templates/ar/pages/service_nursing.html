@@ -1,0 +1,39 @@
+{% extends 'ar/pages/base_portfolio_ar.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/service_detail_ar.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <section class="row" id="banner">
+        <div class="col-md-6 col-sm-12">
+            <img src="{% static '/pages/imgs/medical_services/service-nursing.webp' %}">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h5>خدمات التمريض المنزلي المتخصصة</h5>
+            <p>
+                تقدم الخدمات التمريضية المنزلية من سيدرة كير، في أي وقت وحيثما تكون، عبر كادر تمريضــي متخصص، مختار
+                ومدرب بعناية، ذو مهارة و كفاءة و فاعلية عالية، حيث يقوم ممرضونا بتقديــم الرعايات التمريضية المختلفــة.
+            </p>
+            <div class="row list">
+                <ul class="col-md-6 col-sm-12">
+                    <li>إعطاء المحاليل الوريدية</li>
+                    <li>رعاية أنبوب التغذية</li>
+                    <li>رعاية القسطرة البولية</li>
+                    <li>رعاية أنبوب التنفس</li>
+                    <li>رعاية الجروح بعد الجراحة</li>
+                </ul>
+                <ul class="col-md-6 col-sm-12">
+                    <li>رعاية قروح الفراش</li>
+                    <li>رعاية المسنين</li>
+                    <li>متابعة مرضى الشلل أو السكتة الدماغية</li>
+                    <li>رعاية ما بعد الولادة</li>
+                    <li>رعاية الأطفال حديثي الولادة</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

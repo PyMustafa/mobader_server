@@ -1,0 +1,208 @@
+{% load static %} {% load strings %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mobader</title>
+
+    <!--<link rel="icon" href="{% static 'imgs/logo.png' %}">-->
+    <link
+      rel="stylesheet"
+      href="{% static '/modules/bootstrap/css/bootstrap.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static '/pages/css/base_home_en.css' %}" />
+
+    <style>
+      @font-face {
+        font-family: Lato;
+        src: url("{%static 'fonts/Lato-Regular.ttf'%}");
+      }
+
+      * {
+        font-family: Lato;
+      }
+    </style>
+
+    <script src="{% static '/modules/bootstrap/js/bootstrap.min.js' %}"></script>
+    {% block head %} {% endblock %}
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container-fluid fluid-extra">
+        <a class="navbar-brand" href="/en"
+          ><img src="{% static '/img/logo.png' %}"
+        /></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto-left mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active == '1' %}active{% endif %}"
+                aria-current="page"
+                href="/en"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active == '3' %}active{% endif %}"
+                href="{% url 'about_us_en' %}"
+                >About Us</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active == '2' %}active{% endif %}"
+                href="{% url 'medical_services_en' %}"
+                >Services</a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active == '4' %}active{% endif %}"
+                href="{% url 'contact_us_en' %}"
+                >Contact Us</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ request.path | remove_en }}">
+                العربية&nbsp;&nbsp;
+              </a>
+            </li>
+          </ul>
+
+          <a class="nav-link" aria-current="page" href="{% url 'login' %}"
+            >Login</a
+          >
+          <a
+            class="nav-link"
+            aria-current="page"
+            href="{% url 'register_patient' %}"
+            >Register New</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    {% block content %} {% endblock %}
+
+    <footer>
+      <section class="row steps-caros gx-3" style="width: 100%">
+        <div class="col-md-6 col-sm-12 p-5">
+          <h3 class="footer-title">Download our App</h3>
+          <button class="footer-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-google-play"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M14.222 9.374c1.037-.61 1.037-2.137 0-2.748L11.528 5.04 8.32 8l3.207 2.96 2.694-1.586Zm-3.595 2.116L7.583 8.68 1.03 14.73c.201 1.029 1.36 1.61 2.303 1.055l7.294-4.295ZM1 13.396V2.603L6.846 8 1 13.396ZM1.03 1.27l6.553 6.05 3.044-2.81L3.333.215C2.39-.341 1.231.24 1.03 1.27Z"
+              /></svg
+            >&nbsp; Play Store
+          </button>
+          <button class="footer-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-apple"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43Zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56.244.729.625 1.924 1.273 2.796.576.984 1.34 1.667 1.659 1.899.319.232 1.219.386 1.843.067.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758.347-.79.505-1.217.473-1.282Z"
+              />
+              <path
+                d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43Zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56.244.729.625 1.924 1.273 2.796.576.984 1.34 1.667 1.659 1.899.319.232 1.219.386 1.843.067.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758.347-.79.505-1.217.473-1.282Z"
+              /></svg
+            >&nbsp; Apple Store
+          </button>
+        </div>
+        <div class="col-md-6 col-sm-12 p-5">
+          <h3 class="footer-title">Contact Us</h3>
+          <div class="contact-field">
+            <div class="contact-icon-field">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="#098C97"
+                class="bi bi-telephone-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"
+                />
+              </svg>
+            </div>
+            <p class="contact-text-field">&nbsp;+ 966 114170700</p>
+          </div>
+          <div class="contact-field">
+            <div class="contact-icon-field">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="#098C97"
+                class="bi bi-envelope-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"
+                />
+              </svg>
+            </div>
+            <p class="contact-text-field" style="font-size: 18px">
+              &nbsp;info@mobader.sa
+            </p>
+          </div>
+          <div class="contact-field">
+            <div class="contact-icon-field">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                fill="#098C97"
+                class="bi bi-geo-alt-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
+                />
+              </svg>
+            </div>
+            <p class="contact-text-field">
+              &nbsp;Abdul Malik Bin Marawan Street - Al Mutamar District -
+              Riyadh
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="rights-reserved">
+        <h6>
+          All Rights Reserved © 2023 Mobader Home Care, Powered by
+          <a href="http://sdcadv.sa">sdcadv.sa</a>
+        </h6>
+      </section>
+    </footer>
+  </body>
+</html>

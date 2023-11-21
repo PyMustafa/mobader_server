@@ -1,0 +1,77 @@
+{% extends 'en/doctor/base_template.html' %}
+{% load static %}
+<!-- BLOCK FOR TITLE-->
+{% block title %} Appointment Create {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'cal/css/styles.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+<!--
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
+      integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+      crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="{% static 'cal/css/styles.css' %}">
+-->
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+New Appointment
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<div class="clearfix">
+    <a class="btn btn-info left" href="{% url 'appoint_list' %}"> My Appointments </a>
+</div>
+
+{% if form.errors %}
+{% for field in form %}
+{% for error in field.errors %}
+<div class="alert alert-danger">
+    {{ field.label }} <strong>{{ error | escape }}</strong>
+</div>
+{% endfor %}
+{% endfor %}
+{% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+    {{ field.label }} <strong>{{ error | escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <table class="form form-table">
+        {{ form }}
+        <tr>
+            <td colspan="2">
+                <button type="submit" class="btn btn-info right"> Submit</button>
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->
+<!--
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+-->

@@ -1,0 +1,76 @@
+{% load static %}
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{% url 'lab_dashboard' %}"><img src="{% static '/img/logo.png' %}" style="height: 85px;"/></a>
+        </div>
+        <br>
+        <div class="sidebar-brand sidebar-brand-sm">
+            <a href="{% url 'lab_dashboard' %}">MO</a>
+        </div>
+        <br>
+        <ul class="sidebar-menu">
+            <li class="menu-header">Dashboard</li>
+
+            <!--Home-->
+            {% url 'lab_dashboard' as lab_dashboard %}
+            <li class="{% if request.path == lab_dashboard %}active{% endif %}">
+                <a href="{% url 'lab_dashboard' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Lab Admin Home</span>
+                </a>
+            </li>
+
+            <!-- Services -->
+            {% url 'lab_service_update' id as lab_service_update %}
+            {% url 'lab_services_list' as lab_services_list %}
+            {% url 'lab_service_create' as lab_service_create %}
+            <li class="dropdown {% if request.path == lab_service_update %}active{% endif %}{% if request.path == lab_services_list %}active{% endif %}{% if request.path == lab_service_create %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Services</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == lab_services_list %}active{% endif %}{% if request.path == lab_service_update %}active{% endif %}">
+                        <a href="{% url 'lab_services_list' %}" class="nav-link">
+                            My Services
+                        </a>
+                    </li>
+                    <li class="{% if request.path == lab_service_create %}active{% endif %}">
+                        <a href="{% url 'lab_service_create' %}" class="nav-link">
+                            New Service
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Lab Detail -->
+            {% url 'lab_detail_update' id as lab_detail_update %}
+            {% url 'lab_detail' as lab_detail %}
+            {% url 'lab_detail_create' as lab_detail_create %}
+            <li class="dropdown {% if request.path == lab_detail_update %}active{% endif %}{% if request.path == lab_detail %}active{% endif %}{% if request.path == lab_detail_create %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Laboratory</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == lab_detail %}active{% endif %}{% if request.path == lab_detail_update %}active{% endif %}">
+                        <a href="{% url 'lab_detail' %}" class="nav-link">
+                            Lab Detail
+                        </a>
+                    </li>
+                    <li class="{% if request.path == lab_detail_create %}active{% endif %}">
+                        <a href="{% url 'lab_detail_create' %}" class="nav-link">
+                            New Lab
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+        </ul>
+        <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+            <a href="{% url 'users_logout_process' %}" class="btn btn-danger btn-lg btn-block btn-icon-split">
+                <i class="fas fa-sign-out-alt"></i>LOGOUT
+            </a>
+        </div>
+    </aside>
+</div>

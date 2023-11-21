@@ -1,0 +1,51 @@
+{% extends 'en/doctor/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %} Appointments {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'cal/css/styles.css' %}">
+-->
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+My Appointments
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<div class="row">
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Appointments</h4>
+            </div>
+            <div class="card-body">
+                <div class="clearfix">
+                    <a class="btn btn-info left" href="{% url 'appoint_list' %}?{{ prev_month }}"> Previous Month </a>
+                    <a class="btn btn-info right" href="{% url 'appoint_list' %}?{{ next_month }}"> Next Month </a>
+                    <a class="btn btn-info right" href="{% url 'appoint_add' %}"> New Appointment </a>
+                </div>
+
+
+                {{ calendar }}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

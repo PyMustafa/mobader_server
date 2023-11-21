@@ -1,0 +1,71 @@
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Meeting Room
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'css/AgoraClient.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Meeting Room
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+  <div class="meeting-container">
+    <form id="join-form">
+      <div class="row join-info-group" style="direction: ltr;">
+          <input id="appid" type="text" hidden value="{{ agora_id }}">
+          <input id="token" type="text" hidden>
+          <div class="col-12">
+            <p class="join-info-text">Room Number:</p>
+          </div>
+          <div class="col-8">
+            <input id="channel" type="text" value="{{ room }}" required>
+          </div>
+          <div class="col-2">
+            <button id="join" type="submit" class="btn btn-primary meeting-button">Join</button>
+          </div>
+          <div class="col-2">
+            <button id="leave" type="button" class="btn btn-danger meeting-button" disabled>Leave</button>
+          </div>
+      </div>
+    </form>
+
+    <div class="row control-buttons" style="direction: ltr;">
+      <div class="col-4">
+       <button id="mute-audio" type="button" class="btn btn-primary meeting-button">Mute</button>
+      </div>
+      <div class="col-4">
+       <button id="mute-video" type="button" class="btn btn-primary meeting-button">Stop Camera</button>
+      </div>
+    </div>
+
+    <div class="row video-group g-3" id="remote-playerlist" style="direction: ltr;">
+      <div class="col-6">
+        <div class="player-container">
+          <div id="local-player" class="player"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+<script src="{% static 'js/jquery-3.4.1.min.js' %}" defer></script>
+<script src="{% static 'js/AgoraRTC_N-4.18.3.js' %}" defer></script>
+<script src="{% static 'js/AgoraClient.js' %}" defer></script>
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->
+

@@ -1,0 +1,230 @@
+{% extends 'en/pages/base_portfolio_en.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/home_en.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div id="carouselExampleDark" class="carousel slide">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            {% for item in sliders %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}" style="color: white;">
+                <section class="row" id="banner">
+                    <div class="col-md-6 col-sm-12">
+                        <img src="{{ item.thumbnail.url }}" alt="Item from Slider" height="700px" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <h5 class="animate__animated
+                                    {% if forloop.counter0 == 0 %}
+                                    animate__fadeInDown
+                                    {% endif %}
+                                    {% if forloop.revcounter == 1 %}
+                                    animate__zoomIn
+                                    {% endif %}
+                                    {% if forloop.revcounter == 2 %}
+                                    animate__slideInDown
+                                    {% endif %}
+                                    ">{{ item.title }}</h5>
+                        <h2>{{ item.description }}</h2>
+                    </div>
+                </section>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</main>
+
+<section class="container" id="services">
+    <h3>Services</h3>
+    <h6>We provide primary health care, treatment and rehabilitation</h6>
+    <div class="row services-list g-3">
+        <a class="col-md-4 col-sm-12" href="https://Wa.me/966114170700">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-3.png' %}" loading="lazy">
+                </div>
+                <h5>Doctor Visit</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="https://Wa.me/966114170700">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-2.png' %}" loading="lazy">
+                </div>
+                <h5>Nurse Visit</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="https://Wa.me/966114170700">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-1.png' %}" loading="lazy">
+                </div>
+                <h5>Home Physical Therapy</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_meeting' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>Instant Advice</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="https://Wa.me/966114170700">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>Pharmacy</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="https://Wa.me/966114170700">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>Laboratory</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+    </div>
+</section>
+
+<section class="gallery">
+    <h3>Gallery</h3>
+    <div class="row services-list g-1" id=gallery>
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{% static '/pages/imgs/home/galleryone.png' %}">
+            </div>
+        </section>
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{% static '/pages/imgs/home/gallerytwo.png' %}">
+            </div>
+        </section>
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{% static '/pages/imgs/home/gallerythree.png' %}">
+            </div>
+        </section>
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{% static '/pages/imgs/home/galleryfour.png' %}">
+            </div>
+        </section>
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{% static '/pages/imgs/home/galleryfive.png' %}">
+            </div>
+        </section>
+        <section class="col-md-4 col-sm-12">
+            <div>
+                <img src="{% static '/pages/imgs/home/gallerysix.png' %}">
+            </div>
+        </section>
+    </div>
+</section>
+
+<section class="steps">
+    <h5>We made it easy for you</h5>
+    <h2>Your request is only 3 steps</h2>
+    <section class="row steps-caros gx-3">
+        <div class="col-md-4 col-sm-12">
+            <div class="steps-item">
+                <h3 class="number-title">1</h3>
+                <h3>Register</h3>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="steps-item">
+                <h3 class="number-title">2</h3>
+                <h3>Make Appointment</h3>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="steps-item">
+                <h3 class="number-title">3</h3>
+                <h3>Take Treatment</h3>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

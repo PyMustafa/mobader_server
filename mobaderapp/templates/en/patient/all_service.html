@@ -1,0 +1,148 @@
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Patient Services
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/modules/fullcalendar/fullcalendar.min.css' %}">
+<link rel="stylesheet" href="{% static '/pages/css/home_en.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Patient Services
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+
+
+
+<section class="container" id="services">
+    <h3>Services</h3>
+
+    <div class="row services-list g-3">
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_doctor' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-3.png' %}" loading="lazy">
+                </div>
+                <h5>Doctor Visit</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_nurse' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-2.png' %}" loading="lazy">
+                </div>
+                <h5>Nurse Visit</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_physio' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-1.png' %}" loading="lazy">
+                </div>
+                <h5>Home Physical Therapy</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_meeting' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>Instant Advice</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    Meet Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_medicine' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>Pharmacy</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+        <a class="col-md-4 col-sm-12" href="{% url 'patient_book_analytic' %}">
+            <section>
+                <div class="icon">
+                    <div class="shadow"></div>
+                    <div class="shadow-front"></div>
+                    <img src="{% static '/pages/imgs/home/services-4.png' %}" loading="lazy">
+                </div>
+                <h5>Laboratory</h5>
+                <div class="order">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                    </svg>&nbsp;
+                    Book Now
+                </div>
+            </section>
+        </a>
+    </div>
+</section>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

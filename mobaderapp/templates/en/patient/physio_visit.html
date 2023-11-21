@@ -1,0 +1,234 @@
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Physiotherapist Visit
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/pages/css/book-service.css' %}">
+<link rel="stylesheet" href="{% static '/pages/css/home_en.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Physiotherapist Visit
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+
+<form class="service-type-container" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="service-form-container">
+            <div class="col-md-6 col-sm-12">
+                <label class="form-label" for="service_choices_select">Service Type :&nbsp;<span
+                        style="color: red;">*</span></label>
+                <br>
+                <select class="form-select" id="service_choices_select" name="service_type" disabled>
+                    <option value="{{service_type}}">{{service_type}}</option>
+                </select>
+            </div>
+        <div class="col-md-6 col-sm-12">
+            <br>
+            <label
+                    class="form-label"
+                    for="service_choices_types_select">Services Physiotherapist:&nbsp;<span
+                    style="color: red;">*</span></label>
+            <br>
+            <select
+                    class="form-select"
+                    id="category_choices_types_select"
+                    name="category_class"
+                    onchange="getPhysio()"
+                    required>
+                <option value="0">None</option>
+                {% for service in services %}
+                <option value="{{ service.id }}">{{ service.title }} || {{service.price}} SAR</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="service-form-container">
+        <h4>Physiotherapists</h4>
+        <div class="row" id="physios">
+
+        </div>
+
+    </div>
+
+    <div class="slots-form-container">
+        <h4>Available Times:</h4>
+        <div class="slot-container" id="slot-container">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <a class="btn btn-secondary" href="{% url 'patient_all_services' %}">Cancel</a>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary" type="submit" disabled onclick="stripe(true)">Book and Pay Now</button>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-danger" type="submit" disabled onclick="stripe(false)">Book and Pay Later</button>
+        </div>
+    </div>
+    
+    <input type="number" hidden name="physio_pk">
+    <input type="checkbox" hidden name="payment_stripe">
+</form>
+
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+<script>
+    let selected_service;
+    async function getPhysio() {
+        const api = `{% url 'list_physio' %}`
+        const service_id = document.querySelector("#category_choices_types_select").value
+        selected_service = service_id
+        await fetch(api, {
+            method: "POST",
+            body: JSON.stringify({service_id: service_id})
+        }).then((res) => {
+            return res.json()
+        }).then(json => {
+            if (json.physios) {
+                const physios = document.querySelector("#physios")
+                physios.innerHTML = ""
+                if (json.physios.length > 0) {
+                    json.physios.forEach(physio => {
+                        const html = `
+							<div class="col-md-4 col-sm-12" key="${physio['id']}">
+								<div class="doctor-box">
+									<div class="row row-margin">
+										<div class="col-4 doctor-img-container">
+											<img src="${physio['photo']}">
+										</div>
+										<div class="col-8 doctor-data-container">
+										    <h5>${physio['name']}</h5>
+											<span>Mobile: ${physio['phone']}</span><br>
+										</div>
+									</div>
+									<span class="doctor-address-container">${physio['address']}</span>
+								</div>		
+							</div>
+						`
+                        const physios = document.querySelector("#physios")
+                        physios.innerHTML += html
+                    })
+                }
+            }
+
+        })
+    }
+
+
+    let selected_physio;
+    
+
+    async function updateBookingTimings() {
+        const api = `{% url 'get_times_physio' %}`
+        await fetch(api, {
+            method: "POST",
+            body: JSON.stringify({id: selected_service})
+        }).then(res => {
+            return res.json()
+        }).then(data => {
+            const container = document.querySelector("#slot-container")
+            if (data.slots.length > 0) {
+                container.innerHTML = "<select name='booking_slot' id='slots'></select>"
+                const select = document.querySelector("#slots")
+                select.innerHTML = ""
+                data.slots.forEach(slot => {
+                    const select = document.querySelector("#slots")
+                    select.innerHTML += `<optgroup label="Title: ${slot['day']}"> <option value="${slot['id']}">Start time: ${slot['start_time']}</option></optgroup>`
+                })
+
+            } else {
+                container.innerHTML = "<h4 class='unsuported'>There are no times for this Service</h4>"
+            }
+        })
+    }
+
+
+    function validateForm(selected_physio) {
+        const submitBtns = Array.from(document.querySelectorAll("button[type='submit']"))
+        // const serviceType = document.querySelector("select[name='service_type']").value
+        // const serviceClass = document.querySelector("select[name='service_class']").value
+        // const address = document.querySelector("input[name='patient_address']").value
+        const slot = document.querySelector("select[name='booking_slot']") // check if exists
+        console.log(slot)
+        if (selected_physio <= 0 || !slot) {
+            submitBtns.forEach(btn => {
+                btn.disabled = true
+            })
+        } else {
+            submitBtns.forEach(btn => {
+                btn.disabled = false
+            })
+        }
+    }
+
+    function stripe(bool) {
+        console.log("///////////////////////")
+        console.log(bool)
+        const stripePayment = document.querySelector("input[name='payment_stripe']")
+        stripePayment.checked = bool
+    }
+
+    document.addEventListener("click", event => {
+        const physios_div = document.querySelector("#physios")
+
+        if (event.target == physios_div || physios_div.contains(event.target) && physios_div.children[0].tagName != "H4") {
+            Array.from(physios_div.children).forEach(child => {
+                const selectedPhysioInput = document.querySelector("input[name='physio_pk']")
+                if (child.contains(event.target)) {
+                    selected_physio = parseInt(child.attributes.key.value)
+                    selectedPhysioInput.value = selected_physio
+                    child.children[0].classList.add("selected")
+                    updateBookingTimings()
+                } else {
+                    child.children[0].classList.remove("selected")
+                }
+
+                if (!document.querySelector(".selected")) {
+                    selected_physio = 0
+                    selectedPhysioInput.value = ""
+                }
+            })
+        }
+    })
+
+    document.addEventListener("click", (ev) => {
+        validateForm(selected_physio)
+    })
+    document.addEventListener("input", (ev) => {
+        validateForm(selected_physio)
+    })
+
+    function updateListiners() {
+        const imgs = document.querySelectorAll("img")
+        Array.from(imgs).forEach(img => {
+            img.onerror = function () {
+                const anon_img = `{% static 'imgs/anon.webp' %}`
+                this.src = anon_img;
+            };
+        })
+    }
+
+</script>
+
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

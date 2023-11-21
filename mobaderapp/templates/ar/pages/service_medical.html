@@ -1,0 +1,41 @@
+{% extends 'ar/pages/base_portfolio_ar.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/service_detail_ar.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <section class="row" id="banner">
+        <div class="col-md-6 col-sm-12">
+            <img src="{% static '/pages/imgs/medical_services/service-medical.jpg' %}">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h5> خدمات الرعاية الطبية المنزلية المقيمة</h5>
+            <p>
+                مع سيدرة كير خليك مطمئن، مقدمي الرعاية الطبية المنزلية حاصلين على شهادة صحية NC2، المعترف بها من TESDA،
+                المعتمدة من الفلبين، و أيضا من ذوي التأهيل والخبرة الطويلة في العناية بكبار السن والأطفال بمختلف
+                الاعمار، لمساعدتهم في أنشطة الحياة اليومية، حيث ان خطط الرعاية تعد من قبل فريق التمريض المتخصصين لضمان
+                تقديم رعاية صحية بجودة عالية.
+            </p>
+            <div class="row list">
+                <ul class="col-md-6 col-sm-12">
+                    <li>بعثات مقدمي الرعاية الصحية المنزلية السكنية</li>
+                    <li>إدارة الدواء وفقًا للوصفة الطبية في إطار زمني جيد.</li>
+                    <li>التغذية ، عن طريق الفم أو عن طريق الأنابيب.</li>
+                    <li>رعاية الأطفال حديثي الولادة.</li>
+                    <li>متابعة العلامات الحيوية.</li>
+                </ul>
+                <ul class="col-md-6 col-sm-12">
+                    <li>التوثيق الإلكتروني لسجلات المرضى ليطلع عليها الأقارب المعنيون.</li>
+                    <li>رعاية القسطرة البولية.</li>
+                    <li>العناية بنظافة المريض</li>
+                    <li>تغيير الحفاضات</li>
+                    <li>العناية بالأظافر</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'ar/pages/base_portfolio_ar.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/pages/css/medical_services_ar.css' %}">
+{% endblock %}
+
+{% block content %}
+	<section class="steps">
+		<section class="row steps-caros gx-3">
+			<div class="col-md-6 col-sm-12 j-center">
+				<div class="steps-item">
+					<img src="{% static '/pages/imgs/medical_services/medical_services.jpg' %}" class="img-title">
+					<h4> خدمات التمريض المنزلي المتخصصة</h4>
+					<p>
+						تقدم الخدمات التمريضية المنزلية من سيدرة كير، في أي وقت وحيثما تكون، عبر كادر تمريضــي متخصص، مختار ومدرب بعناية، ذو مهارة و كفاءة و فاعلية عالية، حيث يقوم ممرضونا بتقديــم الرعايات التمريضية المختلفــة.
+					</p>
+					<a href="{% url 'service_nursing_ar' %}" class="read-more-button">
+						اقرا المزيد
+					</a>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-12 j-center">
+				<div class="steps-item">
+					<img src="{% static '/pages/imgs/medical_services/medical_services.jpg' %}" class="img-title">
+					<h4> خدمات الرعاية الطبية المنزلية المقيمة</h4>
+					<p>
+						مع سيدرة كير خليك مطمئن، مقدمي الرعاية الطبية المنزلية حاصلين على شهادة صحية NC2، المعترف بها من TESDA، المعتمدة من الفلبين، و أيضا من ذوي التأهيل والخبرة الطويلة في العناية بكبار السن والأطفال بمختلف الاعمار، لمساعدتهم في أنشطة الحياة اليومية، حيث ان خطط الرعاية تعد من قبل فريق التمريض المتخصصين لضمان تقديم رعاية صحية بجودة عالية.
+					</p>
+					<a href="{% url 'service_medical_ar' %}" class="read-more-button">
+						اقرا المزيد
+					</a>
+				</div>
+			</div>
+		</section>
+{% endblock %}

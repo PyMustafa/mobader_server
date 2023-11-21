@@ -1,0 +1,153 @@
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Patient Home
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/modules/fullcalendar/fullcalendar.min.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Patient Home
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<!-- Reports All Users-->
+
+    <!--Categories Doctor-->
+<p><h5>All Categories of Doctors</h5></p>
+<div class="row">
+    {% for category in categories %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-header">
+                <div class="article-image" data-background="/media/{{category.thumbnail}}"></div>
+                <div class="article-badge">
+                    <div class="article-badge-item bg-danger">
+                        <i class="fas fa-fire"></i>
+                        {{ category.title }}
+                    </div>
+                </div>
+            </div>
+            <div class="article-details">
+                <p>{{ category.description }}</p>
+
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+<p><h5>All Doctors</h5></p>
+<div class="row">
+    {% for doctor in doctors %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-header">
+                <div class="article-image" data-background="{{doctor.profile_pic}}"></div>
+                <div class="article-badge">
+                    <div class="article-badge-item bg-danger">
+                        <i class="fas fa-fire"></i>
+                        {{ doctor.auth_user_id }}
+                    </div>
+                </div>
+            </div>
+            <div class="article-details">
+                <p>{{ doctor.mobile_phone }}</p>
+                <p><span class="badge badge-primary">Price: {{ doctor.price }}</span></p>
+                <p><span class="badge badge-danger">Category: {{ doctor.category_id }}</span></p>
+                <p>{{ doctor.address }}</p>
+
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+<p><h5>All Nurses</h5></p>
+<div class="row">
+    {% for nurse in nurses %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-header">
+                <div class="article-image" data-background="{{nurse.profile_pic}}"></div>
+                <div class="article-badge">
+                    <div class="article-badge-item bg-danger">
+                        <i class="fas fa-fire"></i>
+                        {{ nurse.auth_user_id }}
+                    </div>
+                </div>
+            </div>
+            <div class="article-details">
+                <p>{{ nurse.mobile }}</p>
+                <p>{{ nurse.address }}</p>
+
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+
+<p><h5>All Physiotherapist</h5></p>
+<div class="row">
+    {% for physio in physiotherapists %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-header">
+                <div class="article-image" data-background="{{physio.profile_pic}}"></div>
+                <div class="article-badge">
+                    <div class="article-badge-item bg-danger">
+                        <i class="fas fa-fire"></i>
+                        {{ physio.auth_user_id }}
+                    </div>
+                </div>
+            </div>
+            <div class="article-details">
+                <p>{{ physio.mobile_phone }}</p>
+                <p>{{ physio.address }}</p>
+
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+
+<p><h5>All Laboratories</h5></p>
+<div class="row">
+    {% for lab in labs %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+        <article class="article article-style-b">
+            <div class="article-header">
+                <div class="article-image" data-background="/media/{{lab.thumbnail}}"></div>
+                <div class="article-badge">
+                    <div class="article-badge-item bg-danger">
+                        <i class="fas fa-fire"></i>
+                        {{ lab.name }}
+                    </div>
+                </div>
+            </div>
+            <div class="article-details">
+                <p>Open Time: {{ lab.open_time }}</p>
+                <p>Close Time: {{ lab.close_time }}</p>
+                <p>{{ lab.mobile_phone }}</p>
+                <p>{{ lab.address }}</p>
+
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

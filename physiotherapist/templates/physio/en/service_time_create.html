@@ -1,0 +1,71 @@
+
+{% extends 'physio/en/base_template.html' %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %} Service Time Create {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %} {% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE--> 
+{% block page_title %}
+New Time of Service 
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<div class="row">
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group">
+                        {% if field.label == "Day" %}
+                        <label>{{ field.label }}</label>
+                        <input
+                                type="date"
+                                name="{{ field.name }}"
+                                id="{{ field.name }}"
+                                class="form-control"/>
+                        {% elif field.label == "Start time" or field.label == "End time" %}
+                        <label>{{ field.label }}</label>
+                        <input
+                                type="time"
+                                name="{{ field.name }}"
+                                id="{{ field.name }}"
+                                class="form-control"/>
+                        {%else%}
+                        <label>{{ field.label }}</label>
+                        <select name="{{field.name}}" id="{{self.name}}" class="form-control">
+                            {% for serv in services %}
+                            <option value="{{ serv.id }}">{{ serv.title }}</option>
+                            {% endfor %}
+                        </select>
+                        {%endif%}
+                    </div>
+                    {% if field.errors%}
+                    <div class="alert alert-danger" style="margin: 10px">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-block">
+                        SAVE SERVICE
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %} {% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

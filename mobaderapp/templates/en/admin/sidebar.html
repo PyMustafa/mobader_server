@@ -1,0 +1,260 @@
+{% load static %}
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{% url 'admin_home' %}"><img src="{% static '/img/logo.png' %}" style="height: 85px;"/></a>
+        </div>
+        <br>
+        <div class="sidebar-brand sidebar-brand-sm">
+            <a href="{% url 'admin_home' %}">MO</a>
+        </div>
+        <br>
+        <ul class="sidebar-menu">
+            <li class="menu-header">Dashboard</li>
+
+            <!--Home-->
+            {% url 'admin_home' as admin_home %}
+            <li class="{% if request.path == admin_home %}active{% endif %}">
+                <a href="{% url 'admin_home' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Admin Home</span>
+                </a>
+            </li>
+            
+            <!--Slider-->
+            {% url 'sliders' as sliders %}
+            {% url 'slider_create' as slider_create %}
+            {% url 'slider_update' id as slider_update %}
+            <li class="dropdown {% if request.path == sliders %}active{% endif %}{% if request.path == slider_create %}active{% endif %}{% if request.path == slider_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fa fa-list"></i>
+                    <span>Sliders</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li
+                            class="{% if request.path == sliders %}active{% endif %}
+                            {% if request.path == slider_update %}active{% endif %}"
+                    >
+                        <a href="{% url 'sliders' %}" class="nav-link">All Sliders</a>
+                    </li>
+                    <li
+                            class="{% if request.path == slider_create %}active{% endif %}"
+                    >
+                        <a href="{% url 'slider_create' %}" class="nav-link">Add Slider</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <!--Gallery Images-->
+            {% url 'gallery' as gallery %}
+            {% url 'image_create' as image_create %}
+            {% url 'image_delete' id as image_delete %}
+            <li class="dropdown {% if request.path == gallery %}active{% endif %}{% if request.path == image_create %}active{% endif %}{% if request.path == image_delete %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fa fa-list"></i>
+                    <span>Gallery Images</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li
+                            class="{% if request.path == gallery %}active{% endif %}
+                            {% if request.path == image_delete %}active{% endif %}"
+                    >
+                        <a href="{% url 'gallery' %}" class="nav-link">All Images</a>
+                    </li>
+                    <li
+                            class="{% if request.path == image_create %}active{% endif %}"
+                    >
+                        <a href="{% url 'image_create' %}" class="nav-link">Add Image</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <!--Category Doctors-->
+            {% url 'categories_doctor' as categories_doctor %}
+            {% url 'category_create' as category_create %}
+            {% url 'category_update' id as category_update %}
+            <li class="dropdown {% if request.path == categories_doctor %}active{% endif %}{% if request.path == category_create %}active{% endif %}{% if request.path == category_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fa fa-list"></i>
+                    <span>Categories Doctor</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li
+                            class="{% if request.path == categories_doctor %}active{% endif %}
+                            {% if request.path == category_update %}active{% endif %}"
+                    >
+                        <a href="{% url 'categories_doctor' %}" class="nav-link">All Categories Doctor</a>
+                    </li>
+                    <li
+                            class="{% if request.path == category_create %}active{% endif %}"
+                    >
+                        <a href="{% url 'category_create' %}" class="nav-link">Add Category Doctor</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--Staff-->
+            {% url 'staff_create' as staff_create %}
+            {% url 'staff_list' as staff_list %}
+            <li class="dropdown {% if request.path == staff_create %}active{% endif %}{% if request.path == staff_list %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-user-ninja"></i>
+                    <span>Staff (Call Center)</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == staff_list %}active{% endif %}">
+                        <a href="{% url 'staff_list' %}" class="nav-link">
+                            All Staff
+                        </a>
+                    </li>
+                    <li class="{% if request.path == staff_create %}active{% endif %}">
+                        <a href="{% url 'staff_create' %}" class="nav-link">
+                            Add Staff
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            
+
+
+            
+
+            <!--Doctor-->
+            {% url 'doctor_create' as doctor_create %}
+            {% url 'doctor_list' as doctor_list %}
+            {% url 'doctor_update' id as doctor_update %}
+            <li class="dropdown {% if request.path == doctor_create %}active{% endif %}{% if request.path == doctor_list %}active{% endif %}{% if request.path == doctor_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-user-md"></i>
+                    <span>Doctors</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == doctor_list %}active{% endif %}
+                            {% if request.path == doctor_update %}active{% endif %}">
+                        <a href="{% url 'doctor_list' %}" class="nav-link">
+                            All Doctors
+                        </a>
+                    </li>
+                    <li class="{% if request.path == doctor_create %}active{% endif %}">
+                        <a href="{% url 'doctor_create' %}" class="nav-link">
+                            Add Doctors
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--Nurse-->
+            {% url 'nurse_create' as nurse_create %}
+            {% url 'nurse_list' as nurse_list %}
+            {% url 'nurse_update' id as nurse_update %}
+            <li class="dropdown {% if request.path == nurse_create %}active{% endif %}{% if request.path == nurse_list %}active{% endif %}{% if request.path == nurse_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Nurses</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == nurse_list %}active{% endif %}
+                            {% if request.path == nurse_update %}active{% endif %}">
+                        <a href="{% url 'nurse_list' %}" class="nav-link">
+                            All Nurses
+                        </a>
+                    </li>
+                    <li class="{% if request.path == nurse_create %}active{% endif %}">
+                        <a href="{% url 'nurse_create' %}" class="nav-link">
+                            Add Nurse
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--Physiotherapist-->
+            {% url 'physio_create' as physio_create %}
+            {% url 'physio_list' as physio_list %}
+            {% url 'physio_update' id as physio_update %}
+            <li class="dropdown {% if request.path == physio_create %}active{% endif %}{% if request.path == physio_list %}active{% endif %}{% if request.path == physio_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-walking"></i>
+                    <span>Physiotherapist</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == physio_list %}active{% endif %}
+                            {% if request.path == physio_update %}active{% endif %}">
+                        <a href="{% url 'physio_list' %}" class="nav-link">
+                            All Physiotherapist
+                        </a>
+                    </li>
+                    <li class="{% if request.path == physio_create %}active{% endif %}">
+                        <a href="{% url 'physio_create' %}" class="nav-link">
+                            Add Physiotherapist
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--Laboratory-->
+            {% url 'lab_create' as lab_create %}
+            {% url 'lab_list' as lab_list %}
+            {% url 'lab_update' id as lab_update %}
+            <li class="dropdown {% if request.path == lab_create %}active{% endif %}{% if request.path == lab_list %}active{% endif %}{% if request.path == lab_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-microscope"></i>
+                    <span>Laboratory</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == lab_list %}active{% endif %}
+                            {% if request.path == lab_update %}active{% endif %}">
+                        <a href="{% url 'lab_list' %}" class="nav-link">
+                            All Lab Admins
+                        </a>
+                    </li>
+                    <li class="{% if request.path == lab_create %}active{% endif %}">
+                        <a href="{% url 'lab_create' %}" class="nav-link">
+                            Add Lab Admin
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--Pharmacy-->
+            {% url 'pharma_create' as pharma_create %}
+            {% url 'pharma_list' as pharma_list %}
+            {% url 'pharma_update' id as pharma_update %}
+            <li class="dropdown {% if request.path == pharma_create %}active{% endif %}{% if request.path == pharma_list %}active{% endif %}{% if request.path == pharma_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-vial"></i>
+                    <span>Pharmacy</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == pharma_list %}active{% endif %}
+                            {% if request.path == pharma_update %}active{% endif %}">
+                        <a href="{% url 'pharma_list' %}" class="nav-link">
+                            All Pharmacy Admins
+                        </a>
+                    </li>
+                    <li class="{% if request.path == pharma_create %}active{% endif %}">
+                        <a href="{% url 'pharma_create' %}" class="nav-link">
+                            Add Pharmacy Admin
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--Patient-->
+            {% url 'patient_list' as patient_list %}
+            <li class="dropdown {% if request.path == patient_list %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Patient</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{% if request.path == patient_list %}active{% endif %}">
+                        <a href="{% url 'patient_list' %}" class="nav-link">
+                            All Patient
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+        <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+            <a href="{% url 'users_logout_process' %}" class="btn btn-danger btn-lg btn-block btn-icon-split">
+                <i class="fas fa-sign-out-alt"></i>LOGOUT
+            </a>
+        </div>
+    </aside>
+</div>

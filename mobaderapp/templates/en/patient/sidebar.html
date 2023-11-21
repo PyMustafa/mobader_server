@@ -1,0 +1,87 @@
+{% load static %}
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{% url 'home_ar' %}"><img src="{% static '/img/logo.png' %}" style="height: 85px;"/></a>
+        </div>
+        <br>
+        <div class="sidebar-brand sidebar-brand-sm">
+            <a href="{% url 'home_ar' %}">MO</a>
+        </div>
+        <br>
+        {% if user.is_authenticated %}
+        <ul class="sidebar-menu">
+            <li class="menu-header">Dashboard</li>
+
+            <!--Home-->
+            {% url 'patient_dashboard' as patient_dashboard %}
+            <li class="{% if request.path == patient_dashboard %}active{% endif %}">
+                <a href="{% url 'patient_dashboard' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Patient Home</span>
+                </a>
+            </li>
+
+            <!--All Service-->
+            {% url 'patient_all_services' as patient_all_services %}
+            <li class="{% if request.path == patient_all_services %}active{% endif %}">
+                <a href="{% url 'patient_all_services' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>All Services</span>
+                </a>
+            </li>
+
+            <!-- Bookings Doctors -->
+            {% url 'patient_all_booking_doctors' as patient_all_booking_doctors %}
+            <li class="{% if request.path == patient_all_booking_doctors %}active{% endif %}">
+                <a href="{% url 'patient_all_booking_doctors' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>All Booking Doctors</span>
+                </a>
+            </li>
+
+            <!-- Bookings Nurse -->
+            {% url 'patient_all_booking_nurses' as patient_all_booking_nurses %}
+            <li class="{% if request.path == patient_all_booking_nurses %}active{% endif %}">
+                <a href="{% url 'patient_all_booking_nurses' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>All Booking Nurses</span>
+                </a>
+            </li>
+
+            <!-- Bookings Physio -->
+            {% url 'patient_all_booking_physio' as patient_all_booking_physio %}
+            <li class="{% if request.path == patient_all_booking_physio %}active{% endif %}">
+                <a href="{% url 'patient_all_booking_physio' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>All Booking Physio</span>
+                </a>
+            </li>
+
+            <!-- Bookings Lab Analytics -->
+            {% url 'patient_all_booking_analytics' as patient_all_booking_analytics %}
+            <li class="{% if request.path == patient_all_booking_analytics %}active{% endif %}">
+                <a href="{% url 'patient_all_booking_analytics' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>All Booking Analytics</span>
+                </a>
+            </li>
+
+            <!-- Bookings Medicine Analytics -->
+            {% url 'patient_all_booking_medicines' as patient_all_booking_medicines %}
+            <li class="{% if request.path == patient_all_booking_medicines %}active{% endif %}">
+                <a href="{% url 'patient_all_booking_medicines' %}" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>All Order Medicines</span>
+                </a>
+            </li>
+
+        </ul>
+        <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+            <a href="{% url 'users_logout_process' %}" class="btn btn-danger btn-lg btn-block btn-icon-split">
+                <i class="fas fa-sign-out-alt"></i>LOGOUT
+            </a>
+        </div>
+        {% endif %}
+    </aside>
+</div>

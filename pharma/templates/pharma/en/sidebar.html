@@ -1,0 +1,102 @@
+{% load static %}
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{% url 'pharma_dashboard' %}"><img src="{% static '/img/logo.png' %}" style="height: 85px" /></a>
+        </div>
+        <br />
+        <div class="sidebar-brand sidebar-brand-sm">
+            <a href="{% url 'pharma_dashboard' %}">MO</a>
+        </div>
+        <br />
+        <ul class="sidebar-menu">
+            <li class="menu-header">Dashboard</li>
+
+            <!--Home-->
+            {% url 'pharma_dashboard' as pharma_dashboard %}
+            <li class="{% if request.path == pharma_dashboard %}active{% endif %}">
+                <a href="{% url 'pharma_dashboard' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>pharma Home</span>
+                </a>
+            </li>
+
+            <!-- Services -->
+            {% url 'pharma_medicine_update' id as pharma_medicine_update %}
+            {% url 'pharma_medicine_list' as pharma_medicine_list %}
+            {% url 'pharma_medicine_create' as pharma_medicine_create %}
+            <li
+                class="dropdown {% if request.path == pharma_medicine_update %}active{% endif %}{% if request.path == pharma_medicine_list %}active{% endif %}{% if request.path == pharma_medicine_create %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Medicines</span></a>
+                <ul class="dropdown-menu">
+                    <li
+                        class="{% if request.path == pharma_medicine_list %}active{% endif %}{% if request.path == pharma_medicine_update %}active{% endif %}">
+                        <a href="{% url 'pharma_medicine_list' %}" class="nav-link">
+                            My Medicines
+                        </a>
+                    </li>
+                    <li class="{% if request.path == pharma_medicine_create %}active{% endif %}">
+                        <a href="{% url 'pharma_medicine_create' %}" class="nav-link">
+                            New Medicine
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Pharma Detail -->
+            {% url 'pharma_detail_update' id as pharma_detail_update %}
+            {% url 'pharma_detail' as pharma_detail %}
+            {% url 'pharma_detail_create' as pharma_detail_create %}
+            <li
+                class="dropdown {% if request.path == pharma_detail_update %}active{% endif %}{% if request.path == pharma_detail %}active{% endif %}{% if request.path == pharma_detail_create %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Pharmacy</span></a>
+                <ul class="dropdown-menu">
+                    <li
+                        class="{% if request.path == pharma_detail %}active{% endif %}{% if request.path == pharma_detail_update %}active{% endif %}">
+                        <a href="{% url 'pharma_detail' %}" class="nav-link">
+                            Pharmacy Detail
+                        </a>
+                    </li>
+                    <li class="{% if request.path == pharma_detail_create %}active{% endif %}">
+                        <a href="{% url 'pharma_detail_create' %}" class="nav-link">
+                            New Pharmacy
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Bookings -->
+            {% url 'pharma_booking_pending' as booking_pending %}
+            {% url 'pharma_booking_list' as booking_list %}
+            {% url 'pharma_booking_update' id as booking_update %}
+            <li
+                class="dropdown {% if request.path == booking_pending %}active{% endif %}{% if request.path == booking_list %}active{% endif %}{% if request.path == booking_update %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown">
+                    <i class="fas fa-list"></i>
+                    <span>Bookings</span></a>
+                <ul class="dropdown-menu">
+                    <li
+                        class="{% if request.path == booking_pending %}active{% endif %}{% if request.path == booking_update %}active{% endif %}">
+                        <a href="{% url 'pharma_booking_pending' %}" class="nav-link">
+                            Pending Bookings
+                        </a>
+                    </li>
+                    <li class="{% if request.path == booking_list %}active{% endif %}">
+                        <a href="{% url 'pharma_booking_list' %}" class="nav-link">
+                            All Bookings
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+            <a href="{% url 'users_logout_process' %}" class="btn btn-danger btn-lg btn-block btn-icon-split">
+                <i class="fas fa-sign-out-alt"></i>LOGOUT
+            </a>
+        </div>
+    </aside>
+</div>
