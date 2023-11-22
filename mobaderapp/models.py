@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
+
 # ===========================================
 # Media
 class MediaCenter(models.Model):
@@ -12,7 +13,7 @@ class MediaCenter(models.Model):
 
     def __str__(self):
         return self.title
-        
+
     def get_absolute_url(self):
         return reverse("media")
 
@@ -21,7 +22,7 @@ class MediaCenter(models.Model):
 # Team
 class TeamSlider(models.Model):
     image = models.FileField()
-    
+
     def get_absolute_url(self):
         return reverse("team")
 
@@ -30,10 +31,10 @@ class TeamSlider(models.Model):
 # Events
 class EventSlider(models.Model):
     image = models.FileField()
-    
+
     def get_absolute_url(self):
         return reverse("event")
-    
+
 
 # ===========================================
 # Doctor Category { القلب ، الامراض الصدريه }
@@ -66,7 +67,6 @@ class CustomUser(AbstractUser):
         (8, "Patient"),
     )
     user_type = models.CharField(max_length=2, choices=user_type_choices, default=8)
-    
 
 
 class AdminUser(models.Model):
@@ -98,7 +98,7 @@ class DoctorUser(models.Model):
     mobile_phone = models.CharField(max_length=15, default="")
     address = models.CharField(max_length=255, default="")
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
         return self.auth_user_id.username
 
@@ -154,7 +154,7 @@ class PhysiotherapistUser(models.Model):
 
 class PatientUser(models.Model):
     auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_pic = models.FileField(default="", blank=True, null=True,)
+    profile_pic = models.FileField(default="", blank=True, null=True, )
     mobile = models.CharField(max_length=15, unique=True)
     address = models.CharField(max_length=255, default="")
     verification = models.CharField(max_length=7)
@@ -181,7 +181,7 @@ class DoctorTimes(models.Model):
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return str(self.start_time)
 
@@ -344,7 +344,7 @@ class BookDoctor(models.Model):
         PENDING = "PEN", "Pending"
         ACCEPTED = "ACC", "Accepted"
         REFUSED = "REF", "Refused"
-        
+
     class Type(models.TextChoices):
         VISIT = "VISIT", "Visit"
         MEET = "MEET", "Meet"
@@ -518,6 +518,7 @@ class ImageGallery(models.Model):
     def get_absolute_url(self):
         return reverse("gallery")
 
+
 # ===================================================================
 class Offer(models.Model):
     title = models.CharField(max_length=200)
@@ -611,6 +612,7 @@ class OfferLabAnalytic(models.Model):
 
     def __str__(self):
         return self.offer.title
+
 
 # ==============================================================
 # Manage Users (1, "Admin"), (2, "Staff"), (3, "Doctor"), (4, "Nurse"), (5, "LapAdmin"), (6, "PharmacyAdmin"),

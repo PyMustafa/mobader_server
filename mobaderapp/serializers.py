@@ -3,7 +3,8 @@ from rest_framework import serializers
 from . import models
 from .models import CustomUser, PatientUser, BookDoctor, DoctorCategory, DoctorUser, NurseUser, NurseService, \
     NurseServiceTimes, BookNurse, PhysiotherapistUser, PhysiotherapistService, PhysiotherapistServiceTimes, BookPhysio, \
-    PharmacyUser, PharmacyMedicine, PharmacyDetail, BookMedicine, LapUser, LabService, LabDetail, BookAnalytic, DoctorTimes
+    PharmacyUser, PharmacyMedicine, PharmacyDetail, BookMedicine, LapUser, LabService, LabDetail, BookAnalytic, \
+    DoctorTimes, Offer, OfferDoctor, OfferNurseService, OfferPhysioService, OfferLabAnalytic
 
 
 # Authentication Serializers
@@ -87,10 +88,10 @@ class CategoryDoctorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorUser
         fields = ['id', 'auth_user_id', "profile_pic", "price", "mobile_phone", "address"]
-        
+
     def __init__(self, *args, **kwargs):
-            super(CategoryDoctorsSerializer, self).__init__(*args, **kwargs)
-            self.Meta.depth = 1
+        super(CategoryDoctorsSerializer, self).__init__(*args, **kwargs)
+        self.Meta.depth = 1
 
 
 class DoctorBookingsSerializer(serializers.ModelSerializer):
@@ -99,9 +100,13 @@ class DoctorBookingsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 # =========================================================
 # nurses & booking nurse
+
+class NurseBookingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookNurse
+        fields = '__all__'
 
 
 class NurseSerializer(serializers.ModelSerializer):
@@ -120,7 +125,7 @@ class NurseServiceTimesSerializer(serializers.ModelSerializer):
     class Meta:
         model = NurseServiceTimes
         fields = '__all__'
-        
+
         def __init__(self, *args, **kwargs):
             super(NurseServiceTimesSerializer, self).__init__(*args, **kwargs)
             self.Meta.depth = 2
@@ -134,6 +139,12 @@ class BookNurseSerializer(serializers.ModelSerializer):
 
 # =========================================================
 # Physiotherapist & booking Physiotherapist
+
+class PhysioBookingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookPhysio
+        fields = '__all__'
+
 
 class PhysioUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -211,6 +222,48 @@ class BookAnalyticSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookAnalytic
         fields = ['patient', 'lab', 'service']
+
+
+class AnalyticBookingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookAnalytic
+        fields = '__all__'
+
+
+
+# Offers ==========================
+class OfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Offer
+        fields = '__all__'
+
+
+class OfferDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OfferDoctor
+        fields = ['id', 'offer', 'doctor']
+        depth = 1
+
+
+class OfferNurseServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OfferNurseService
+        fields = ['id', 'offer', 'nurse_service']
+        depth = 1
+
+
+class OfferPhysioServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OfferPhysioService
+        fields = ['id', 'offer', 'physio_service']
+        depth = 1
+
+
+class OfferLabAnalyticSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OfferLabAnalytic
+        fields = ['id', 'offer', 'lab_analytic']
+        depth = 1
 
 
 # ===========================================================

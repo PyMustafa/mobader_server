@@ -18,7 +18,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from . import serializers, models
 from .models import PatientUser, BookDoctor, DoctorCategory, DoctorUser, DoctorTimes, NurseUser, NurseService, \
     NurseServiceTimes, PhysiotherapistUser, PhysiotherapistService, PhysiotherapistServiceTimes, BookPhysio, \
-    PharmacyUser, PharmacyMedicine, PharmacyDetail, BookMedicine, LapUser, LabService, LabDetail
+    PharmacyUser, PharmacyMedicine, PharmacyDetail, BookMedicine, LapUser, LabService, LabDetail, OfferDoctor, \
+    OfferNurseService, BookNurse, BookAnalytic
 
 from .serializers import PatientUserSerializer, UserVerifyOTPSerializer, UserLoginSerializer, \
     ResetPassRequestSerializer, ResetPassSerializer, BookDoctorSerializer, DoctorCategorySerializer, \
@@ -26,7 +27,9 @@ from .serializers import PatientUserSerializer, UserVerifyOTPSerializer, UserLog
     BookNurseSerializer, PhysioUserSerializer, PhysioServiceSerializer, PhysioServiceTimesSerializer, \
     BookPhysioSerializer, PharmacyUserSerializer, PharmacyMedicineSerializer, PharmacySerializer, \
     BookMedicineSerializer, LabUserSerializer, LabServiceSerializer, LabDetailSerializer, BookAnalyticSerializer, \
-    BookDoctorSerializers, DoctorBookingsSerializer
+    BookDoctorSerializers, DoctorBookingsSerializer, OfferDoctorSerializer, OfferNurseServiceSerializer, \
+    OfferPhysioServiceSerializer, OfferLabAnalyticSerializer, NurseBookingsSerializer, PhysioBookingsSerializer, \
+    AnalyticBookingsSerializer
 
 User = get_user_model()
 
@@ -378,7 +381,6 @@ class BookDoctorCreateAPIView(generics.CreateAPIView):
 
     # we will uncomment this line after Authorization error fix
     # permission_classes = [IsAuthenticated]
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -454,6 +456,47 @@ class DoctorBookingRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = DoctorBookingsSerializer
 
 
+# Offers ===============
+class DoctorOffersListAPIView(generics.ListAPIView):
+    serializer_class = OfferDoctorSerializer
+    queryset = OfferDoctor.objects.all()
+
+
+class DoctorOffersRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = OfferDoctorSerializer
+    queryset = OfferDoctor.objects.all()
+
+
+class NurseOffersListAPIView(generics.ListAPIView):
+    serializer_class = OfferNurseServiceSerializer
+    queryset = OfferNurseService.objects.all()
+
+
+class NurseOffersRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = OfferNurseServiceSerializer
+    queryset = OfferNurseService.objects.all()
+
+
+class PhysioOffersListAPIView(generics.ListAPIView):
+    serializer_class = OfferPhysioServiceSerializer
+    queryset = OfferNurseService.objects.all()
+
+
+class PhysioOffersRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = OfferPhysioServiceSerializer
+    queryset = OfferNurseService.objects.all()
+
+
+class LabOffersListAPIView(generics.ListAPIView):
+    serializer_class = OfferLabAnalyticSerializer
+    queryset = OfferNurseService.objects.all()
+
+
+class LabOffersRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = OfferLabAnalyticSerializer
+    queryset = OfferNurseService.objects.all()
+
+
 # =========================================================
 class NurseListAPIView(generics.ListAPIView):
     queryset = NurseUser.objects.all()
@@ -480,6 +523,7 @@ class NurseServiceAllTimesListAPIView(generics.ListAPIView):
 
 
 class BookNurseAPIView(generics.CreateAPIView):
+    queryset = BookNurse.objects.all()
     serializer_class = BookNurseSerializer
 
     # we will uncomment this line after Authorization error fix
@@ -506,6 +550,17 @@ class BookNurseAPIView(generics.CreateAPIView):
 
         #  handling payment using Stripe
         return Response({"message": "Booking completed"}, status=status.HTTP_201_CREATED)
+
+
+class NurseBookingsListAPIView(generics.ListAPIView):
+    queryset = BookNurse.objects.all()
+    serializer_class = NurseBookingsSerializer
+
+
+# Get one doctor booking
+class NurseBookingRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = BookNurse.objects.all()
+    serializer_class = NurseBookingsSerializer
 
 
 # =========================================================
@@ -562,6 +617,17 @@ class BookPhysioAPIView(generics.CreateAPIView):
 
         #  handling payment using Stripe
         return Response({"message": "Booking completed"}, status=status.HTTP_201_CREATED)
+
+
+class PhysioBookingsListAPIView(generics.ListAPIView):
+    queryset = BookPhysio.objects.all()
+    serializer_class = PhysioBookingsSerializer
+
+
+# Get one doctor booking
+class PhysioBookingRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = BookPhysio.objects.all()
+    serializer_class = PhysioBookingsSerializer
 
 
 # =========================================================
@@ -625,12 +691,26 @@ class LabUserListAPIView(generics.ListAPIView):
     serializer_class = LabUserSerializer
 
 
+class LabUserRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = LapUser.objects.all()
+    serializer_class = LabUserSerializer
+
 class LabServiceListAPIView(generics.ListAPIView):
     queryset = LabService.objects.all()
     serializer_class = LabServiceSerializer
 
 
+class LabServiceRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = LabService.objects.all()
+    serializer_class = LabServiceSerializer
+
+
 class LabListAPIView(generics.ListAPIView):
+    queryset = LabDetail.objects.all()
+    serializer_class = LabDetailSerializer
+
+
+class LabRetrieveAPIView(generics.RetrieveAPIView):
     queryset = LabDetail.objects.all()
     serializer_class = LabDetailSerializer
 
@@ -657,6 +737,17 @@ class BookAnalyticAPIView(generics.CreateAPIView):
         )
         #  handling payment using Stripe
         return Response({"status": "success", "message": "Booking completed"}, status=status.HTTP_201_CREATED)
+
+
+class LabBookingsListAPIView(generics.ListAPIView):
+    queryset = BookAnalytic.objects.all()
+    serializer_class = AnalyticBookingsSerializer
+
+
+# Get one doctor booking
+class LabBookingRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = BookAnalytic.objects.all()
+    serializer_class = AnalyticBookingsSerializer
 
 
 # =========================================================
