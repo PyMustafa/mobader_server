@@ -1,30 +1,32 @@
-import json
 import random
 from datetime import datetime
-
+from django.core.serializers import serialize
+import json
+from django.http import JsonResponse, HttpResponseRedirect
 import requests
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from django.core.serializers import serialize
-from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import redirect
 from rest_framework import generics
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import serializers, models
-from .models import PatientUser, DoctorCategory, DoctorUser, DoctorTimes, NurseUser, NurseService, \
-    NurseServiceTimes, PhysiotherapistUser, PhysiotherapistService, PhysiotherapistServiceTimes, PharmacyUser, \
-    PharmacyMedicine, PharmacyDetail, LapUser, LabService, LabDetail, BookDoctor
+from .models import PatientUser, BookDoctor, DoctorCategory, DoctorUser, DoctorTimes, NurseUser, NurseService, \
+    NurseServiceTimes, PhysiotherapistUser, PhysiotherapistService, PhysiotherapistServiceTimes, BookPhysio, \
+    PharmacyUser, PharmacyMedicine, PharmacyDetail, BookMedicine, LapUser, LabService, LabDetail
+
 from .serializers import PatientUserSerializer, UserVerifyOTPSerializer, UserLoginSerializer, \
     ResetPassRequestSerializer, ResetPassSerializer, BookDoctorSerializer, DoctorCategorySerializer, \
     CategoryDoctorsSerializer, NurseSerializer, NurseServiceSerializer, NurseServiceTimesSerializer, \
     BookNurseSerializer, PhysioUserSerializer, PhysioServiceSerializer, PhysioServiceTimesSerializer, \
     BookPhysioSerializer, PharmacyUserSerializer, PharmacyMedicineSerializer, PharmacySerializer, \
-    BookMedicineSerializer, LabUserSerializer, LabServiceSerializer, LabDetailSerializer, BookAnalyticSerializer
+    BookMedicineSerializer, LabUserSerializer, LabServiceSerializer, LabDetailSerializer, BookAnalyticSerializer, \
+    BookDoctorSerializers, DoctorBookingsSerializer
 
 User = get_user_model()
 
@@ -36,7 +38,7 @@ def generate_otp() -> str:
     return x
 
 
-base_url = "https://2752-102-185-153-196.ngrok-free.app/"
+base_url = "https://mobader.sa"
 secret_key = 'sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW'
 
 
@@ -91,12 +93,9 @@ def create_tap_payment_session(patient, price, book_model):
         response_data = response.json()
         status_code = response.status_code
 
-        print(f'response_data: {response_data}')
-        print(f'status_code: {status_code}')
-
         redirect_url = response_data['transaction']['url']
 
-        return redirect(redirect_url)
+        return response
     except requests.RequestException as e:
         return {"status": "error", "error": str(e)}
 
@@ -114,6 +113,24 @@ def retrieve_charge(charge_id):
     response = requests.get(url, headers=headers)
     return response
 
+
+def payment_is_approved(response_data):
+    try:
+        response_code = response_data["response"]["code"]
+        card_security_code = response_data["card_security"]["code"]
+        acquirer_response_code = response_data["acquirer"]["response"]["code"]
+
+        if (
+                response_code == '000'
+                and card_security_code == 'M'
+                and acquirer_response_code == '00'
+        ):
+            return True
+    except KeyError:
+        return False
+    return False
+
+
 # tap webhook
 class TapWebhookView(APIView):
     authentication_classes = []
@@ -125,18 +142,11 @@ class TapWebhookView(APIView):
         response = retrieve_charge(charge_id)
         response_data = response.json()
 
-        response_code = response_data["response"]["code"]
-        card_security_code = response_data["card_security"]["code"]
-        acquirer_response_code = response_data["acquirer"]["response"]["code"]
-        patient_mobile = response_data["customer"]["phone"]["number"]
-        book_model = response_data["metadata"]["book_model"]
-
-        if (
-                response_code == '000'
-                and card_security_code == 'M'
-                and acquirer_response_code == '00'
-        ):
+        if payment_is_approved(response_data):
+            patient_mobile = response_data["customer"]["phone"]["number"]
+            book_model = response_data["metadata"]["book_model"]
             patient = PatientUser.objects.filter(mobile=patient_mobile).first()
+
             if book_model == "BookDoctor":
                 book_obj = BookDoctor.objects.filter(patient_id=patient.id).first()
                 book_obj.is_paid = True
@@ -144,6 +154,24 @@ class TapWebhookView(APIView):
             return JsonResponse({'status': 'success', 'message': 'Payment successful'})
         else:
             return JsonResponse({'status': 'error', 'message': 'Payment not successful'})
+
+
+class TapPaymentStatus(APIView):
+    def get(self, request, *args, **kwargs):
+        charge_id = kwargs['charge_id']
+        url = f"https://api.tap.company/v2/charges/{charge_id}"
+
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {secret_key}",
+        }
+
+        response = requests.get(url, headers=headers)
+        response_data = response.json()
+
+        if payment_is_approved(response_data):
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 # Authentication APIs
@@ -296,8 +324,6 @@ class ResetPassView(generics.UpdateAPIView):
 
 
 # get all doctors in the selected category
-
-
 class CategoryDoctorsAPIView(generics.ListAPIView):
     serializer_class = CategoryDoctorsSerializer
 
@@ -318,12 +344,9 @@ class CategoryDoctorsAPIView(generics.ListAPIView):
 
 
 # New Code to get doctors and it's time
-
 def get_doctors(request, pk):
     times = models.DoctorTimes.objects.filter(doctor__category_id=pk).values()
-    print(f'times: {times}')
     cat_doctors = models.DoctorUser.objects.filter(category_id=pk).values()
-    print(f'cat_doctors: {cat_doctors}')
     list_doctors = []
     for doctor in cat_doctors:
         doctor["times"] = []
@@ -350,7 +373,7 @@ class CategoryAPIView(generics.RetrieveAPIView):
     serializer_class = DoctorCategorySerializer
 
 
-class BookDoctorAPIView(generics.CreateAPIView):
+class BookDoctorCreateAPIView(generics.CreateAPIView):
     serializer_class = BookDoctorSerializer
 
     # we will uncomment this line after Authorization error fix
@@ -371,45 +394,67 @@ class BookDoctorAPIView(generics.CreateAPIView):
         else:
             meeting_room = ""
 
-        if is_paid == "true":
-            is_paid = True
-        else:
-            is_paid = False
         booking = serializer.save(
             patient=patient,
             doctor=doctor,
             book_time=book_time,
-            is_paid=is_paid,
             book_type=book_type,
             meeting_room=meeting_room,
             status="PEN",
         )
-
         booking_data = BookDoctorSerializer(booking).data
 
         # open tap payment session
         book_model = "BookDoctor"
-        payment_session = create_tap_payment_session(patient, price, book_model)
-        print(f'payment_session: {payment_session}')
-        if isinstance(payment_session, HttpResponseRedirect):
-            return payment_session
-        else:
-            response_data = {
-                "status": "success",
-                "message": "Booking completed",
-                "price": price,
-                "booking_data": booking_data
-            }
-            book_time.active = False
-            book_time.save()
+        if is_paid:
+            payment_response = create_tap_payment_session(patient, price, book_model)
+            payment_status_code = payment_response.status_code
 
-            return Response(response_data, status=status.HTTP_201_CREATED)
+            if payment_status_code == 200:
+                payment_response_data = payment_response.json()
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Payment completed",
+                    "payment_response_data": payment_response_data,
+                    "booking_data": booking_data
+                }
+                book_time.active = False
+                book_time.save()
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Booking completed",
+                    "price": price,
+                    "booking_data": booking_data
+                }
+                book_time.active = False
+                book_time.save()
+        response_data = {
+            "status": "success",
+            "message": "Booking completed",
+            "price": price,
+            "booking_data": booking_data
+        }
+        book_time.active = False
+        book_time.save()
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+# Get all doctor bookings
+class DoctorBookingsListAPIView(generics.ListAPIView):
+    queryset = BookDoctor.objects.all()
+    serializer_class = DoctorBookingsSerializer
+
+
+# Get one doctor booking
+class DoctorBookingRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = BookDoctor.objects.all()
+    serializer_class = DoctorBookingsSerializer
 
 
 # =========================================================
-# Nurse & booking Nurse
-
-
 class NurseListAPIView(generics.ListAPIView):
     queryset = NurseUser.objects.all()
     serializer_class = NurseSerializer
@@ -429,7 +474,7 @@ class NurseServiceAllTimesListAPIView(generics.ListAPIView):
     serializer_class = NurseServiceTimesSerializer
 
     def get_queryset(self):
-        service_id = self.kwargs['service_id']
+        service_id = self.kwargs['service_id']  # Assuming the service_id is passed in the URL
         queryset = NurseServiceTimes.objects.filter(service=service_id)
         return queryset
 
@@ -642,7 +687,7 @@ class DoctorDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class DoctorTimesList(generics.ListAPIView):
     queryset = models.DoctorTimes.objects.all()
-    serializer_class = serializers.DoctorTimesSerializer
+    serializer_class = serializers.DoctorTimesSerializers
 
 
 class PatientList(generics.ListCreateAPIView):

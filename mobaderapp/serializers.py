@@ -87,10 +87,17 @@ class CategoryDoctorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorUser
         fields = ['id', 'auth_user_id', "profile_pic", "price", "mobile_phone", "address"]
-
+        
     def __init__(self, *args, **kwargs):
             super(CategoryDoctorsSerializer, self).__init__(*args, **kwargs)
             self.Meta.depth = 1
+
+
+class DoctorBookingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookDoctor
+        fields = '__all__'
+
 
 
 # =========================================================
@@ -113,6 +120,10 @@ class NurseServiceTimesSerializer(serializers.ModelSerializer):
     class Meta:
         model = NurseServiceTimes
         fields = '__all__'
+        
+        def __init__(self, *args, **kwargs):
+            super(NurseServiceTimesSerializer, self).__init__(*args, **kwargs)
+            self.Meta.depth = 2
 
 
 class BookNurseSerializer(serializers.ModelSerializer):
@@ -239,13 +250,13 @@ class DoctorDetailSerializers(serializers.ModelSerializer):
         self.Meta.depth = 1
 
 
-class DoctorTimesSerializer(serializers.ModelSerializer):
+class DoctorTimesSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.DoctorTimes
-        fields = ["id", "doctor", "start_time", "end_time"]
+        fields = ["id", "doctor", "day", "start_time", "end_time"]
 
     def __init__(self, *args, **kwargs):
-        super(DoctorTimesSerializer, self).__init__(*args, **kwargs)
+        super(DoctorTimesSerializers, self).__init__(*args, **kwargs)
         self.Meta.depth = 1
 
 

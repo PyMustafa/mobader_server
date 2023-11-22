@@ -8,9 +8,31 @@ from .models import (
     BookPhysio,
     BookAnalytic,
     BookMedicine,
+    PatientUser,
+    CustomUser,
 )
 
+# Register
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+    
+    class Meta:
+        model = CustomUser
+        fields = ["username", "email", "password"]
 
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data["phone_number"]
+        phone_number_processed = re.match("^\+?(\d+)$", phone_number)
+        if phone_number_processed and len(phone_number_processed[1]) >= 9:
+            if len(phone_number_processed[1]) == 9:
+                return phone_number_processed[1]
+
+            phone_number_stripped = re.match("^966(\d{9})$", phone_number_processed[1])
+            if phone_number_stripped:
+                return phone_number_stripped[1]
+        raise forms.ValidationError("Invalid Phone Number. Must satisfy: +966123456789")
+        
+        
 # Login for all users
 class LoginForm(forms.Form):
     username = forms.CharField()

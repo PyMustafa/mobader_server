@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import random
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 import requests
 import stripe
 from django.conf import settings
@@ -14,9 +15,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
-from .utils import generate_otp
 
 from mobaderapp.forms import (
+    UserRegistrationForm,
     ServiceVisitBooking,
     ServiceVisitBookingNurse,
     ServiceVisitBookingPhysio,
@@ -49,38 +50,34 @@ from mobaderapp.models import (
 
 # =================================================
 # Register
-
-
+def generate_otp() -> str:
+    x = ""
+    for _ in range(6):
+        x += str(random.choice(range(10)))
+    return x
+   
+# =====================================================================
 class PatientUserCreateView(SuccessMessageMixin, CreateView):
     model = CustomUser
     success_message = "Patient Created!"
-    fields = ["first_name", "last_name", "username", "email", "password"]
+    fields = ["username", "email", "password"]
     template_name = "en/patient/register.html"
 
     def form_valid(self, form):
+        # Sending OTP
+        number = generate_otp()
+        message_content = f"Mobader OTP Activation Number From Server: {number}"
+        requests.get(
+            f"http://mshastra.com/sendurlcomma.aspx?user=20094672&pwd=c12345&senderid=GCHOSPITAL&CountryCode=966&mobileno={self.request.POST.get('mobile')}&msgtext={message_content}&smstype=0"
+        )
         user = form.save(commit=False)
         user.is_active = True
         user.user_type = 8
         user.set_password(form.cleaned_data["password"])
         user.save()
-        # Sending OTP
-        # generated_otp = generate_otp()
-        # send_otp_phone(self.request.POST.get("mobile"), generated_otp)
-        # print(generated_otp)
-        # Saving Doctor User
-        print("Here in Profile")
-        profile_pic = self.request.FILES["profile_pic"]
-        fs = FileSystemStorage()
-        filename = fs.save(profile_pic.name, profile_pic)
-        profile_pic_url = fs.url(filename)
-
-        print(profile_pic_url)
-
-        user.patientuser.profile_pic = profile_pic_url
-        user.patientuser.mobile = self.request.POST.get("mobile")
-        user.patientuser.verification = "111111"
-        user.patientuser.address = self.request.POST.get("address")
-        user.patientuser.save()
+        cre = CustomUser.objects.get(email=user.email)
+        patient = PatientUser(auth_user_id=cre, mobile=self.request.POST.get("mobile"), verification=number, address=self.request.POST.get("address"))
+        patient.save()
         messages.success(self.request, "Patient Created Successfully")
         return HttpResponseRedirect(
             reverse(
@@ -151,32 +148,39 @@ def book_doctor(request):
             # Set Default Status
             booking.status = "PEN"
             if request.POST.get("payment_stripe"):
-                stripe_service_name = "Mobader Doctor Visit"
-                booking.is_paid = True
+                service_name = "Mobader Doctor Visit"
                 price = DoctorUser.objects.get(id=request.POST["doctor_pk"]).price
                 current_site = get_current_site(request)
-                stripe.api_key = settings.STRIPE_SECRETKEY
-                checkout_session = stripe.checkout.Session.create(
-                    payment_method_types=["card"],
-                    line_items=[
-                        {
-                            "price_data": {
-                                "product_data": {"name": stripe_service_name},
-                                "currency": "sar",
-                                "unit_amount": int(price) * 100,
-                            },
-                            "quantity": 1,
+                # stripe.api_key = settings.STRIPE_SECRETKEY
+                url = "https://api.tap.company/v2/charges/"
+                payload = {
+                    "amount": int(price),
+                    "currency": "SAR",
+                    "description": service_name,
+                    "customer": {
+                        "first_name": "amr",
+                        "phone": {
+                            "country_code": 966,
+                            "number": 51234567,
                         },
-                    ],
-                    mode="payment",
-                    customer_creation="always",
-                    success_url=f"http://{current_site}/user/verify_order?status=success&pk={booking.pk}",
-                    cancel_url=f"http://{current_site}/user/verify_order?status=failed&pk={booking.pk}",
-                )
-                book_time.active = False
+                    },
+                    "source": {"id": "src_all"},
+                    "redirect": {
+                        "url": f"http://{current_site}/patient/all-booking-doctors/"
+                    },
+                }
+                headers = {
+                    "accept": "application/json",
+                    "content-type": "application/json",
+                    "Authorization": "Bearer sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW",
+                }
+                response = requests.post(url, json=payload, headers=headers)
+                res = json.loads(response.text)
+                booking.is_paid = True
+                # book_time.active = False
                 book_time.save()
                 booking.save()
-                return redirect(checkout_session.url, code=303)
+                return redirect(res["transaction"]["url"])
             else:
                 booking.is_paid = False
                 book_time.active = False
@@ -244,7 +248,6 @@ def book_nurse(request):
                 booking.time.active = False
                 booking.time.save()
                 booking.save()
-
                 return redirect(checkout_session.url, code=303)
             else:
                 booking.time.active = False

@@ -32,12 +32,14 @@ def home_ar(request):
     return render(request, "ar/pages/home.html", context)
     
 def media_ar(request):
-    # sliders = models.Slider.objects.all()
-    # images = models.ImageGallery.objects.all()
+    medias = models.MediaCenter.objects.all()
+    teams = models.TeamSlider.objects.all()
+    events = models.EventSlider.objects.all()
     context = {
         "active": "5",
-        # "sliders": sliders,
-        # "images": images,
+        "medias": medias,
+        "teams": teams,
+        "events": events,
     }
     return render(request, "ar/pages/media.html", context)
 

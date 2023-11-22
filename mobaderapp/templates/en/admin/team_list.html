@@ -1,0 +1,44 @@
+{% extends 'en/admin/base_template.html' %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %} Team Medical {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %} {% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+    Team Medical
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+    <div class="row">
+        {% for team in teamslider_list %}
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <article class="article article-style-b">
+                    <div class="article-header">
+                        <div class="article-image" data-background="/media/{{ team.image }}"></div>
+                    </div>
+                    <div class="article-details">
+                            <a href="{% url 'team_delete' team.id %}" class="btn btn-danger">
+                                Delete
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                       
+                    </div>
+                </article>
+            </div>
+
+        {% endfor %}
+
+    </div>
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %} {% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

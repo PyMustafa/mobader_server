@@ -19,6 +19,9 @@ from .models import (
     PatientUser,
     Slider,
     ImageGallery,
+    MediaCenter,
+    TeamSlider,
+    EventSlider,
 )
 
 
@@ -64,7 +67,76 @@ class SliderDeleteView(DeleteView):
     success_message = "Slider Deleted!"
     template_name = "en/admin/slider_delete.html"
     success_url = reverse_lazy("sliders")
+    
+# ========================================================
+# Media Items
 
+
+class MediaListView(ListView):
+    model = MediaCenter
+    template_name = "en/admin/media_list.html"
+
+
+class MediaCreate(SuccessMessageMixin, CreateView):
+    model = MediaCenter
+    success_message = "Media Added!"
+    fields = "__all__"
+    template_name = "en/admin/media_create.html"
+
+
+class MediaUpdate(UpdateView):
+    model = MediaCenter
+    success_message = "Media Updated!"
+    fields = "__all__"
+    template_name = "en/admin/media_update.html"
+
+
+class MediaDeleteView(DeleteView):
+    model = MediaCenter
+    success_message = "Media Deleted!"
+    template_name = "en/admin/media_delete.html"
+    success_url = reverse_lazy("media")
+
+# ========================================================
+# Team Images
+class TeamListView(ListView):
+    model = TeamSlider
+    template_name = "en/admin/team_list.html"
+
+
+class TeamCreate(SuccessMessageMixin, CreateView):
+    model = TeamSlider
+    success_message = "Team Added!"
+    fields = "__all__"
+    template_name = "en/admin/team_create.html"
+
+
+class TeamDeleteView(DeleteView):
+    model = TeamSlider
+    success_message = "Team Deleted!"
+    template_name = "en/admin/team_delete.html"
+    success_url = reverse_lazy("team")
+    
+# ========================================================
+# Event Images
+class EventListView(ListView):
+    model = EventSlider
+    template_name = "en/admin/event_list.html"
+
+
+class EventCreate(SuccessMessageMixin, CreateView):
+    model = EventSlider
+    success_message = "Event Added!"
+    fields = "__all__"
+    template_name = "en/admin/event_create.html"
+
+
+class EventDeleteView(DeleteView):
+    model = EventSlider
+    success_message = "Event Deleted!"
+    template_name = "en/admin/event_delete.html"
+    success_url = reverse_lazy("event")
+    
 
 # ========================================================
 # Gallery Images

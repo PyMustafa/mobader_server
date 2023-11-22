@@ -36,6 +36,13 @@
               <div class="card-body">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <div class="form-group">
+                        <label>Mobile Phone</label>
+                        <div >
+                            <strong>+966 </strong>
+                            <input type="text" name="mobile" id="mobile" style="padding: 6px 20px; margin: 8px 0; box-sizing: border-box;" />
+                        </div>
+                    </div>
                     {% for field in form %}
                     <div class="form-group">
                         <label>{{ field.label }}</label>
@@ -52,14 +59,7 @@
                         {% endif %}
                     </div>
                     {% endfor %}
-                    <div class="form-group">
-                        <label>Profile Image</label>
-                        <input type="file" name="profile_pic" id="profile_pic" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label>Mobile Phone</label>
-                        <input type="text" name="mobile" id="mobile" class="form-control"/>
-                    </div>
+                    
                     <div class="form-group">
                         <label>Address</label>
                         <input type="text" name="address" id="address" class="form-control"/>

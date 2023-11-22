@@ -1,0 +1,29 @@
+{% extends 'en/admin/base_template.html' %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %} Media Delete {% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %} {% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Delete Media
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+<h1>Delete Media</h1>
+<form action="" method="post">{% csrf_token %}
+<p>Are you sure you want to delete "{{ object.title }}"?</p>
+<input type="submit" value="Confirm"> </form>
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %} {% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

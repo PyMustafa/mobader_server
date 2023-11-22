@@ -12,18 +12,27 @@ class MediaCenter(models.Model):
 
     def __str__(self):
         return self.title
+        
+    def get_absolute_url(self):
+        return reverse("media")
 
 
 # ===========================================
 # Team
 class TeamSlider(models.Model):
     image = models.FileField()
+    
+    def get_absolute_url(self):
+        return reverse("team")
 
 
 # ===========================================
 # Events
 class EventSlider(models.Model):
     image = models.FileField()
+    
+    def get_absolute_url(self):
+        return reverse("event")
     
 
 # ===========================================
@@ -56,7 +65,8 @@ class CustomUser(AbstractUser):
         (7, "Physiotherapist"),
         (8, "Patient"),
     )
-    user_type = models.CharField(max_length=2, choices=user_type_choices, default=1)
+    user_type = models.CharField(max_length=2, choices=user_type_choices, default=8)
+    
 
 
 class AdminUser(models.Model):
@@ -144,7 +154,7 @@ class PhysiotherapistUser(models.Model):
 
 class PatientUser(models.Model):
     auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_pic = models.FileField()
+    profile_pic = models.FileField(default="", blank=True, null=True,)
     mobile = models.CharField(max_length=15, unique=True)
     address = models.CharField(max_length=255, default="")
     verification = models.CharField(max_length=7)

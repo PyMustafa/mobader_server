@@ -33,6 +33,62 @@ urlpatterns = [
         name="slider_delete",
     ),
     # ========================================================
+    # Media Center
+    path(
+        "media/",
+        admin_views.MediaListView.as_view(),
+        name="media",
+    ),
+    path(
+        "media_create/",
+        admin_views.MediaCreate.as_view(),
+        name="media_create",
+    ),
+    path(
+        "media_update/<int:pk>/",
+        admin_views.MediaUpdate.as_view(),
+        name="media_update",
+    ),
+    path(
+        "media_delete/<int:pk>/",
+        admin_views.MediaDeleteView.as_view(),
+        name="media_delete",
+    ),
+    # ========================================================
+    # Team Slider
+    path(
+        "team/",
+        admin_views.TeamListView.as_view(),
+        name="team",
+    ),
+    path(
+        "team_create/",
+        admin_views.TeamCreate.as_view(),
+        name="team_create",
+    ),
+    path(
+        "team_delete/<int:pk>/",
+        admin_views.TeamDeleteView.as_view(),
+        name="team_delete",
+    ),
+    # ========================================================
+    # Events Slider
+    path(
+        "event/",
+        admin_views.EventListView.as_view(),
+        name="event",
+    ),
+    path(
+        "event_create/",
+        admin_views.EventCreate.as_view(),
+        name="event_create",
+    ),
+    path(
+        "event_delete/<int:pk>/",
+        admin_views.EventDeleteView.as_view(),
+        name="event_delete",
+    ),
+    # ========================================================
     # Gallery Images
     path(
         "gallery/",

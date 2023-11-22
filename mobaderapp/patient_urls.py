@@ -10,6 +10,11 @@ urlpatterns = [
         patient_views.PatientUserCreateView.as_view(),
         name="register_patient",
     ),
+    #path(
+    #    "register/",
+    #    patient_views.register_view,
+    #    name="register_patient",
+    #),
     path(
         "confirm-account/<str:phone>/",
         patient_views.confirm_account,
