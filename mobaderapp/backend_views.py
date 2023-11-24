@@ -12,6 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.hashers import make_password
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -19,7 +20,7 @@ from . import serializers, models
 from .models import PatientUser, BookDoctor, DoctorCategory, DoctorUser, DoctorTimes, NurseUser, NurseService, \
     NurseServiceTimes, PhysiotherapistUser, PhysiotherapistService, PhysiotherapistServiceTimes, BookPhysio, \
     PharmacyUser, PharmacyMedicine, PharmacyDetail, BookMedicine, LapUser, LabService, LabDetail, OfferDoctor, \
-    OfferNurseService, BookNurse, BookAnalytic
+    OfferNurseService, BookNurse, BookAnalytic, CustomUser
 
 from .serializers import PatientUserSerializer, UserVerifyOTPSerializer, UserLoginSerializer, \
     ResetPassRequestSerializer, ResetPassSerializer, BookDoctorSerializer, DoctorCategorySerializer, \
@@ -49,9 +50,9 @@ def create_tap_payment_session(patient, price, book_model):
     url = "https://api.tap.company/v2/charges/"
 
     # customer info
-    first_name = patient.auth_user_id.first_name
-    last_name = patient.auth_user_id.last_name
-    email = patient.auth_user_id.email
+    first_name = patient.first_name
+    last_name = patient.last_name
+    email = patient.email
     mobile_phone = patient.mobile
     payload = {
         "amount": round(price),
@@ -82,7 +83,7 @@ def create_tap_payment_session(patient, price, book_model):
         # The ID of the Merchant Account. Available on the Tap Dashboard (goSell > API Credentials > Merchant ID)
         "merchant": {"id": "1234"},
         "source": {"id": "src_card"},
-        "post": {"url": f"{base_url}api/v1/tap_webhook/"},
+        "post": {"url": f"{base_url}api/v1/tap-webhook/"},
         "redirect": {"url": base_url}
     }
 
@@ -185,7 +186,7 @@ class PatientUserCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         verification_value = generate_otp()
         serializer.validated_data['verification'] = verification_value
-        super().perform_create(serializer)
+        serializer.validated_data['password'] = make_password(serializer.validated_data.get('password'))
 
         message_content = f"""
                 Welcome to Mobader\n
@@ -193,11 +194,11 @@ class PatientUserCreateView(generics.CreateAPIView):
                 This is your Activation Code {verification_value}
                 """
         try:
-            # response = requests.get(
-            #    f"https://mshastra.com/sendurlcomma.aspx?user=20094672&pwd=c12345&senderid=MOBADER&CountryCode=966&mobileno={serializer.validated_data['mobile']}&msgtext={message_content}&smstype=0"
-            # )
-            # response.raise_for_status()
-            print(verification_value)
+            response = requests.get(
+                f"https://mshastra.com/sendurlcomma.aspx?user=20094672&pwd=c12345&senderid=MOBADER&CountryCode=966&mobileno={serializer.validated_data['mobile']}&msgtext={message_content}&smstype=0"
+            )
+            response.raise_for_status()
+            super().perform_create(serializer)
         except requests.RequestException as e:
             print(f"Error sending SMS: {e}")
 
@@ -229,17 +230,18 @@ class UserLoginAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        username = serializer.validated_data['username']
+        mobile = serializer.validated_data['mobile']
         password = serializer.validated_data['password']
 
-        user = authenticate(request, username=username, password=password)
+        # authenticate using mobile number
+        user = authenticate(request, mobile=mobile, password=password)
 
         if user:
             login(request, user)
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            patient = PatientUser.objects.get(auth_user_id=user.id)
+            patient = PatientUser.objects.get(id=user.id)
 
             user_info = {
                 'id': patient.id,
@@ -279,7 +281,7 @@ class ResetPassRequestView(generics.CreateAPIView):
             patient = PatientUser.objects.get(mobile=mobile_number)
         except PatientUser.DoesNotExist:
             return Response({'detail': 'User with this mobile number does not exist.'},
-                            status=status.HTTP_404_NOT_FOUND)
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Generate OTP and update the verification field
         new_otp = generate_otp()
@@ -304,10 +306,11 @@ class ResetPassRequestView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-class ResetPassView(generics.UpdateAPIView):
+class ResetPassView(generics.CreateAPIView):
     serializer_class = ResetPassSerializer
+    queryset = CustomUser.objects.all()
 
-    def update(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -321,7 +324,7 @@ class ResetPassView(generics.UpdateAPIView):
             return Response({'detail': 'Invalid verification code.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # update the user password
-        patient.auth_user_id.set_password(new_password)
+        patient.set_password(new_password)
         patient.save()
         return Response({'detail': 'Password reset successful.'}, status=status.HTTP_200_OK)
 
@@ -353,7 +356,7 @@ def get_doctors(request, pk):
     list_doctors = []
     for doctor in cat_doctors:
         doctor["times"] = []
-        info = models.CustomUser.objects.filter(id=doctor["auth_user_id_id"])
+        info = models.CustomUser.objects.filter(id=doctor["id"])
         doctor["info"] = json.loads(serialize("json", info, fields=("username", "email", "first_name", "last_name")))
         for time in times:
             if time["doctor_id"] == doctor["id"]:
@@ -694,6 +697,7 @@ class LabUserListAPIView(generics.ListAPIView):
 class LabUserRetrieveAPIView(generics.RetrieveAPIView):
     queryset = LapUser.objects.all()
     serializer_class = LabUserSerializer
+
 
 class LabServiceListAPIView(generics.ListAPIView):
     queryset = LabService.objects.all()

@@ -15,14 +15,14 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
+from rest_framework.views import APIView
 
 from mobaderapp.forms import (
-    UserRegistrationForm,
     ServiceVisitBooking,
     ServiceVisitBookingNurse,
     ServiceVisitBookingPhysio,
     ServiceVisitBookingAnalytic,
-    ServiceVisitBookingMedicine,
+    ServiceVisitBookingMedicine, PatientUserForm,
 )
 from mobaderapp.models import (
     CustomUser,
@@ -55,12 +55,14 @@ def generate_otp() -> str:
     for _ in range(6):
         x += str(random.choice(range(10)))
     return x
-   
+
+
 # =====================================================================
+
 class PatientUserCreateView(SuccessMessageMixin, CreateView):
-    model = CustomUser
+    model = PatientUser
+    form_class = PatientUserForm  # Use the custom form here
     success_message = "Patient Created!"
-    fields = ["username", "email", "password"]
     template_name = "en/patient/register.html"
 
     def form_valid(self, form):
@@ -71,25 +73,44 @@ class PatientUserCreateView(SuccessMessageMixin, CreateView):
             f"http://mshastra.com/sendurlcomma.aspx?user=20094672&pwd=c12345&senderid=GCHOSPITAL&CountryCode=966&mobileno={self.request.POST.get('mobile')}&msgtext={message_content}&smstype=0"
         )
         user = form.save(commit=False)
-        user.is_active = True
         user.user_type = 8
         user.set_password(form.cleaned_data["password"])
+        user.verification = number
         user.save()
-        cre = CustomUser.objects.get(email=user.email)
-        patient = PatientUser(auth_user_id=cre, mobile=self.request.POST.get("mobile"), verification=number, address=self.request.POST.get("address"))
-        patient.save()
         messages.success(self.request, "Patient Created Successfully")
         return HttpResponseRedirect(
             reverse(
                 "confirm_account", kwargs={"phone": self.request.POST.get("mobile")}
             )
         )
-
+# class PatientUserCreateView(SuccessMessageMixin, CreateView):
+#     model = PatientUser
+#     success_message = "Patient Created!"
+#     fields = ["mobile", "username", "email", "password"]
+#     template_name = "en/patient/register.html"
+#
+#     def form_valid(self, form):
+#         # Sending OTP
+#         number = generate_otp()
+#         message_content = f"Mobader OTP Activation Number From Server: {number}"
+#         requests.get(
+#             f"http://mshastra.com/sendurlcomma.aspx?user=20094672&pwd=c12345&senderid=GCHOSPITAL&CountryCode=966&mobileno={self.request.POST.get('mobile')}&msgtext={message_content}&smstype=0"
+#         )
+#         user = form.save(commit=False)
+#         user.user_type = 8
+#         user.set_password(form.cleaned_data["password"])
+#         user.verification = number
+#         user.save()
+#         messages.success(self.request, "Patient Created Successfully")
+#         return HttpResponseRedirect(
+#             reverse(
+#                 "confirm_account", kwargs={"phone": self.request.POST.get("mobile")}
+#             )
+#         )
+#
 
 def confirm_account(request, phone):
     patient = PatientUser.objects.filter(mobile=phone).first()
-    print("================")
-    print(patient)
     if request.method == "POST":
         enter_code = request.POST.get("code")
         print(enter_code)
@@ -129,6 +150,142 @@ def all_services(request):
     return render(request, "en/patient/all_service.html")
 
 
+base_url = "https://mobader.sa"
+secret_key = 'sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW'
+
+
+def create_tap_payment_session(patient, price, book_model):
+    url = "https://api.tap.company/v2/charges/"
+
+    # customer info
+    first_name = patient.first_name
+    last_name = patient.last_name
+    email = patient.email
+    mobile_phone = patient.mobile
+    payload = {
+        "amount": round(price),
+        "currency": "SAR",
+        "customer_initiated": True,
+        "threeDSecure": True,
+        "save_card": False,
+        "description": "Test Description",
+        "metadata": {"book_model": book_model},
+        "reference": {
+            "transaction": "txn_01",
+            "order": "ord_01"
+        },
+        "receipt": {
+            "email": True,
+            "sms": True
+        },
+        "customer": {
+            "first_name": first_name,
+            "middle_name": "",
+            "last_name": last_name,
+            "email": email,
+            "phone": {
+                "country_code": 966,
+                "number": int(mobile_phone)
+            }
+        },
+        # The ID of the Merchant Account. Available on the Tap Dashboard (goSell > API Credentials > Merchant ID)
+        "merchant": {"id": "1234"},
+        "source": {"id": "src_card"},
+        "post": {"url": f"{base_url}api/v1/tap_webhook/"},
+        "redirect": {"url": f"{base_url}/patient/dashboard/"}
+    }
+
+    headers = {
+        "Authorization": f"Bearer {secret_key}",
+        "Content-Type": "application/json",
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response_data = response.json()
+        status_code = response.status_code
+
+        redirect_url = response_data['transaction']['url']
+
+        return response
+    except requests.RequestException as e:
+        return {"status": "error", "error": str(e)}
+
+
+def retrieve_charge(charge_id):
+    import requests
+
+    url = f'https://api.tap.company/v2/charges/{charge_id}'
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {secret_key}"
+    }
+
+    response = requests.get(url, headers=headers)
+    return response
+
+
+def payment_is_approved(response_data):
+    try:
+        response_code = response_data["response"]["code"]
+        card_security_code = response_data["card_security"]["code"]
+        acquirer_response_code = response_data["acquirer"]["response"]["code"]
+
+        if (
+                response_code == '000'
+                and card_security_code == 'M'
+                and acquirer_response_code == '00'
+        ):
+            return True
+    except KeyError:
+        return False
+    return False
+
+
+# tap webhook
+class TapWebhookView(APIView):
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        payload = request.data
+        charge_id = payload['id']
+
+        response = retrieve_charge(charge_id)
+        response_data = response.json()
+
+        if payment_is_approved(response_data):
+            patient_mobile = response_data["customer"]["phone"]["number"]
+            book_model = response_data["metadata"]["book_model"]
+            patient = PatientUser.objects.filter(mobile=patient_mobile).first()
+
+            if book_model == "BookDoctor":
+                book_obj = BookDoctor.objects.filter(patient_id=patient.id).first()
+                book_obj.is_paid = True
+                book_obj.save()
+            return JsonResponse({'status': 'success', 'message': 'Payment successful'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Payment not successful'})
+
+
+class TapPaymentStatus(APIView):
+    def get(self, request, *args, **kwargs):
+        charge_id = kwargs['charge_id']
+        url = f"https://api.tap.company/v2/charges/{charge_id}"
+
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {secret_key}",
+        }
+
+        response = requests.get(url, headers=headers)
+        response_data = response.json()
+
+        if payment_is_approved(response_data):
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
 def book_doctor(request):
     if request.method == "POST":
         if request.user.id:
@@ -136,7 +293,7 @@ def book_doctor(request):
             booking = BookDoctor()
             # Get Patient
             booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
+                customuser_ptr_id=request.user.id
             ).first()
             # Get Doctor
             booking.doctor = DoctorUser.objects.get(id=request.POST["doctor_pk"])
@@ -152,30 +309,46 @@ def book_doctor(request):
                 price = DoctorUser.objects.get(id=request.POST["doctor_pk"]).price
                 current_site = get_current_site(request)
                 # stripe.api_key = settings.STRIPE_SECRETKEY
-                url = "https://api.tap.company/v2/charges/"
-                payload = {
-                    "amount": int(price),
-                    "currency": "SAR",
-                    "description": service_name,
-                    "customer": {
-                        "first_name": "amr",
-                        "phone": {
-                            "country_code": 966,
-                            "number": 51234567,
-                        },
-                    },
-                    "source": {"id": "src_all"},
-                    "redirect": {
-                        "url": f"http://{current_site}/patient/all-booking-doctors/"
-                    },
-                }
-                headers = {
-                    "accept": "application/json",
-                    "content-type": "application/json",
-                    "Authorization": "Bearer sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW",
-                }
-                response = requests.post(url, json=payload, headers=headers)
-                res = json.loads(response.text)
+                # open tap payment session
+                book_model = "BookDoctor"
+                if is_paid:
+                    payment_response = create_tap_payment_session(booking.patient, price, book_model)
+                    payment_status_code = payment_response.status_code
+
+                    if payment_status_code == 200:
+                        payment_response_data = payment_response.json()
+                        response_data = {
+                            "status": payment_status_code,
+                            "message": "Payment completed",
+                            "payment_response_data": payment_response_data,
+                            "booking_data": booking_data
+                        }
+
+                        booking.is_paid = True
+                        book_time.active = False
+                        book_time.save()
+                        booking.save()
+                        return redirect("patient_dashboard")
+                    else:
+                        response_data = {
+                            "status": payment_status_code,
+                            "message": "Booking completed",
+                            "price": price,
+                            "booking_data": booking_data
+                        }
+                        book_time.active = False
+                        book_time.save()
+                        response_data = {
+                            "status": "success",
+                            "message": "Booking completed",
+                            "price": price,
+                            "booking_data": booking_data
+                        }
+                        book_time.active = False
+                        book_time.save()
+
+                        return Response(response_data, status=status.HTTP_201_CREATED)
+
                 booking.is_paid = True
                 # book_time.active = False
                 book_time.save()
@@ -185,7 +358,6 @@ def book_doctor(request):
                 booking.is_paid = False
                 book_time.active = False
                 book_time.save()
-                booking.status = "PEN"
                 booking.save()
                 messages.success(
                     request, "Booking Completed, please wait until it accepted"
@@ -196,7 +368,7 @@ def book_doctor(request):
     booking_form = ServiceVisitBooking()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-        auth_user_id=request.user.id
+        customuser_ptr_id=request.user.id
     ).first()
     context["service_type"] = "Booking Doctor"
     context["categories"] = DoctorCategory.objects.all()
@@ -212,7 +384,7 @@ def book_nurse(request):
             request.POST = request.POST.dict()
             booking = BookNurse()
             booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
+                customuser_ptr_id=request.user.id
             ).first()
             booking.nurse = NurseUser.objects.get(id=request.POST["nurse_pk"])
             booking.service = NurseService.objects.get(
@@ -263,7 +435,7 @@ def book_nurse(request):
     booking_form = ServiceVisitBookingNurse()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-        auth_user_id=request.user.id
+        customuser_ptr_id=request.user.id
     ).first()
     context["service_type"] = "Booking Nurse"
     context["services"] = NurseService.objects.all()
@@ -278,7 +450,7 @@ def book_physio(request):
             request.POST = request.POST.dict()
             booking = BookPhysio()
             booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
+                customuser_ptr_id=request.user.id
             ).first()
             booking.physio = PhysiotherapistUser.objects.get(
                 id=request.POST["physio_pk"]
@@ -331,7 +503,7 @@ def book_physio(request):
     booking_form = ServiceVisitBookingPhysio()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-        auth_user_id=request.user.id
+        customuser_ptr_id=request.user.id
     ).first()
     context["service_type"] = "Booking Physiotherapist"
     context["services"] = PhysiotherapistService.objects.all()
@@ -537,6 +709,7 @@ context = {"agora_id": settings.AGORA_APP_ID}
 return render(request, "en/patient/meeting_room.html", context)
 """
 
+
 # =================================================
 # All Details
 
@@ -613,10 +786,10 @@ def list_service_doctors(request):
                     photo = str(doctor.profile_pic)
                 except:
                     photo = None
-                doctor_name = str(doctor.auth_user_id)
+                doctor_name = str(doctor.username)
                 context["doctors"].append(
                     {
-                        "phone": doctor.mobile_phone,
+                        "phone": doctor.mobile,
                         "address": doctor.address,
                         "price": doctor.price,
                         "name": doctor_name,

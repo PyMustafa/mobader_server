@@ -23,21 +23,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class PatientUserSerializer(serializers.ModelSerializer):
-    auth_user_id = CustomUserSerializer()
-
     class Meta:
         model = PatientUser
-        fields = ['auth_user_id', 'profile_pic', 'mobile', 'address']
-
-    def create(self, validated_data):
-        base_user_data = validated_data.pop('auth_user_id')
-        custom_user_serializer = CustomUserSerializer(data=base_user_data)
-        if custom_user_serializer.is_valid():
-            custom_user = custom_user_serializer.save()
-            patient_user = PatientUser.objects.create(auth_user_id=custom_user, **validated_data)
-            return patient_user
-        else:
-            raise serializers.ValidationError(custom_user_serializer.errors)
+        fields = ['username', 'mobile', 'email', 'password']
 
 
 class UserVerifyOTPSerializer(serializers.Serializer):
@@ -45,7 +33,7 @@ class UserVerifyOTPSerializer(serializers.Serializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    mobile = serializers.CharField()
     password = serializers.CharField(
         style={'input_type': 'password'},
         write_only=True,
@@ -87,7 +75,7 @@ class CategoryDoctorsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DoctorUser
-        fields = ['id', 'auth_user_id', "profile_pic", "price", "mobile_phone", "address"]
+        fields = ['id', "profile_pic", "price", "mobile", "address"]
 
     def __init__(self, *args, **kwargs):
         super(CategoryDoctorsSerializer, self).__init__(*args, **kwargs)
@@ -276,7 +264,7 @@ class SliderSerializer(serializers.ModelSerializer):
 class DoctorSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.DoctorUser
-        fields = ["id", "auth_user_id", "address", "mobile_phone", "category_id", "price", "profile_pic"]
+        fields = ["id", "address", "mobile", "category_id", "price", "profile_pic"]
 
     def __init__(self, *args, **kwargs):
         super(DoctorSerializers, self).__init__(*args, **kwargs)
@@ -286,17 +274,14 @@ class DoctorSerializers(serializers.ModelSerializer):
 class DoctorFilterSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.DoctorUser
-        fields = ["id", "auth_user_id", "address", "mobile_phone", "category_id", "price", "profile_pic"]
-
-        def __init__(self, *args, **kwargs):
-            super(DoctorFilterSerializers, self).__init__(*args, **kwargs)
-            self.Meta.depth = 1
+        fields = ["id", "address", "mobile", "category_id", "price", "profile_pic"]
+        depth = 1
 
 
 class DoctorDetailSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.DoctorUser
-        fields = ["id", "auth_user_id", "address", "mobile_phone", "category_id", "price", "profile_pic"]
+        fields = ["id", "address", "mobile", "category_id", "price", "profile_pic"]
 
     def __init__(self, *args, **kwargs):
         super(DoctorDetailSerializers, self).__init__(*args, **kwargs)
@@ -316,7 +301,7 @@ class DoctorTimesSerializers(serializers.ModelSerializer):
 class PatientSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.PatientUser
-        fields = ["id", "auth_user_id", "address", "mobile"]
+        fields = ["id", "address", "mobile"]
 
     def __init__(self, *args, **kwargs):
         super(PatientSerializers, self).__init__(*args, **kwargs)
@@ -326,7 +311,7 @@ class PatientSerializers(serializers.ModelSerializer):
 class PatientDetailSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.PatientUser
-        fields = ["id", "auth_user_id", "address", "mobile"]
+        fields = ["id", "address", "mobile"]
 
     def __init__(self, *args, **kwargs):
         super(PatientDetailSerializers, self).__init__(*args, **kwargs)

@@ -24,7 +24,7 @@ urlpatterns = [
 
 
     # tap payment
-    path('tap_webhook/', views.TapWebhookView.as_view(), name='tap_webhook'),
+    path('tap-webhook/', views.TapWebhookView.as_view(), name='tap_webhook'),
     path('tap-payment-status/<str:charge_id>/', views.TapPaymentStatus.as_view(), name='tap-payment-status'),
 
     # Offers

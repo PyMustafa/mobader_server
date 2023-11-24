@@ -1,6 +1,6 @@
 {% extends 'ar/pages/base_portfolio_ar.html' %}
 {% load static %}
-
+{% load embed_video_tags %}
 {% block head %}
 
 <link rel=" stylesheet" href="{% static '/pages/css/home_ar.css' %}">
@@ -15,11 +15,7 @@
             {% for media in medias %}
             <div class="col-md-4 col-sm-12">
                 <section>
-                    <iframe width=" 100%" height="250rem"
-                        src="{{ media.video }}" title="YouTube video player"
-                        frameborder="2"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe>
+                    {% video media.video 'tiny' %}
                     <br>
                     <h6 style="text-align: center;">{{ media.title }}</h6>
                 </section>

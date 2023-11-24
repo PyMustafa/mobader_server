@@ -63,9 +63,9 @@ class Calendar(HTMLCalendar):
 
     # formats a month as a table
     # filter events by year and month
-    def formatmonth(self, withyear=True):
+    def formatmonth(self, doctor, withyear=True):
         events = DoctorTimes.objects.filter(
-            start_time__year=self.year, start_time__month=self.month
+            start_time__year=self.year, start_time__month=self.month, doctor=doctor
         )
 
         cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'

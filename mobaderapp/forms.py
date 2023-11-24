@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from django.forms import ModelForm, DateInput
 
 from .models import (
@@ -12,30 +13,45 @@ from .models import (
     CustomUser,
 )
 
+# a RegexValidator for the mobile phone number
+mobile_validator = RegexValidator(
+    regex=r'^[1-9]\d{8}$',
+    message='Enter a valid mobile number!',
+)
+
+
 # Register
-class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(label="Password", widget=forms.PasswordInput)
-    
+class PatientUserForm(forms.ModelForm):
+    mobile = forms.CharField(validators=[mobile_validator])
+
     class Meta:
-        model = CustomUser
-        fields = ["username", "email", "password"]
+        model = PatientUser
+        fields = ["mobile", "username", "email", "password"]
 
-    def clean_phone_number(self):
-        phone_number = self.cleaned_data["phone_number"]
-        phone_number_processed = re.match("^\+?(\d+)$", phone_number)
-        if phone_number_processed and len(phone_number_processed[1]) >= 9:
-            if len(phone_number_processed[1]) == 9:
-                return phone_number_processed[1]
 
-            phone_number_stripped = re.match("^966(\d{9})$", phone_number_processed[1])
-            if phone_number_stripped:
-                return phone_number_stripped[1]
-        raise forms.ValidationError("Invalid Phone Number. Must satisfy: +966123456789")
-        
-        
+# class UserRegistrationForm(forms.ModelForm):
+# password = forms.CharField(label="Password", widget=forms.PasswordInput)
+#
+# class Meta:
+#     model = CustomUser
+#     fields = ["username", "email", "password"]
+#
+# def clean_phone_number(self):
+#     phone_number = self.cleaned_data["phone_number"]
+#     phone_number_processed = re.match("^\+?(\d+)$", phone_number)
+#     if phone_number_processed and len(phone_number_processed[1]) >= 9:
+#         if len(phone_number_processed[1]) == 9:
+#             return phone_number_processed[1]
+#
+#         phone_number_stripped = re.match("^966(\d{9})$", phone_number_processed[1])
+#         if phone_number_stripped:
+#             return phone_number_stripped[1]
+#     raise forms.ValidationError("Invalid Phone Number. Must satisfy: +966123456789")
+
+
 # Login for all users
 class LoginForm(forms.Form):
-    username = forms.CharField()
+    mobile = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
 
@@ -93,4 +109,3 @@ class ServiceVisitBookingMedicine(ModelForm):
     class Meta:
         model = BookMedicine
         fields = "__all__"
-

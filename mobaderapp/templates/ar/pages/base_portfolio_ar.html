@@ -28,6 +28,32 @@
 		* {
 			font-family: sedrahcare;
 		}
+		.floating-parent{
+		    position: fixed;
+		    bottom: 8%;
+		    left: 18px;
+		    text-align: center;
+		    color: green;
+		}
+		.floating-parent .left-button{
+		    width: 60px;
+		    height: 60px;
+		    border-radius:50%;
+		    background-repeat:no-repeat;
+		    background-color: green;
+		    background-size: 24px;
+		    background-position: center;
+		    float: left;
+		    margin: 0 auto;
+		    cursor: pointer;
+		    box-shadow: 0 -2px 3px -1px green;
+		}
+		.floating-parent .left-button i{
+		    font-size: 24px; 
+		    vertical-align: middle; 
+		    margin-left: 5px
+		    
+		}
 	</style>
 
 	<!-- Google tag (gtag.js) -->
@@ -93,10 +119,21 @@
 			</div>
 		</div>
 	</nav>
-
-	{% block content %}
-	{% endblock %}
-
+	
+    	<a target="_blank" href="https://api.whatsapp.com/send?phone=966534029017&amp;text=" class="sa-whtsp-sprt sa-mob-none">
+    	    <i class="icon-whatsapp"></i> 
+    	    الدعم الفني
+    	</a>
+    	{% block content %}
+    	{% endblock %}
+    	<a target="_blank" href="https://api.whatsapp.com/send?phone=966534029017&amp;text=">
+    	    <div class="floating-parent">
+                <div class="left-button">
+                </div>
+                <h4>Contact</h4>
+            </div>
+    	</a>
+    
 	<footer>
 		<section class="row steps-caros gx-3" style="width: 100%">
 			<div class="col-md-6 col-sm-12 p-5">

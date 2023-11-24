@@ -3,13 +3,14 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from embed_video.fields import EmbedVideoField
 
 
 # ===========================================
 # Media
 class MediaCenter(models.Model):
     title = models.CharField(max_length=200)
-    video = models.CharField(max_length=255)
+    video = EmbedVideoField()
 
     def __str__(self):
         return self.title
@@ -67,6 +68,7 @@ class CustomUser(AbstractUser):
         (8, "Patient"),
     )
     user_type = models.CharField(max_length=2, choices=user_type_choices, default=8)
+    mobile = models.CharField(max_length=15, default="")
 
 
 class AdminUser(models.Model):
@@ -75,8 +77,7 @@ class AdminUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class StaffUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class StaffUser(CustomUser):
     profile_pic = models.FileField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -84,8 +85,7 @@ class StaffUser(models.Model):
         return reverse("staff_list")
 
 
-class DoctorUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class DoctorUser(CustomUser):
     category_id = models.ForeignKey(
         DoctorCategory,
         on_delete=models.CASCADE,
@@ -94,57 +94,45 @@ class DoctorUser(models.Model):
     )
     profile_pic = models.FileField(default="")
     price = models.FloatField(default=0.0)
-    hospital_name = models.CharField(max_length=20, default="")
-    mobile_phone = models.CharField(max_length=15, default="")
     address = models.CharField(max_length=255, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.auth_user_id.username
+        return self.username
 
     def get_absolute_url(self):
         return reverse("doctor_list")
 
 
-class NurseUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class NurseUser(CustomUser):
     profile_pic = models.FileField(default="")
-    hospital_name = models.CharField(max_length=20, default="")
     address = models.CharField(max_length=255, default="")
-    mobile = models.CharField(max_length=15, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         return reverse("nurse_list")
 
 
-class LapUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class LapUser(CustomUser):
     profile_pic = models.FileField(default="")
     address = models.CharField(max_length=255, default="")
-    mobile = models.CharField(max_length=15, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         return reverse("lab_list")
 
 
-class PharmacyUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class PharmacyUser(CustomUser):
     profile_pic = models.FileField(default="")
     address = models.CharField(max_length=255, default="")
-    mobile = models.CharField(max_length=15, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         return reverse("pharma_list")
 
 
-class PhysiotherapistUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class PhysiotherapistUser(CustomUser):
     profile_pic = models.FileField(default="")
-    hospital_name = models.CharField(max_length=20, default="")
-    mobile_phone = models.CharField(max_length=15, default="")
     address = models.CharField(max_length=255, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -152,17 +140,15 @@ class PhysiotherapistUser(models.Model):
         return reverse("physio_list")
 
 
-class PatientUser(models.Model):
-    auth_user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+class PatientUser(CustomUser):
     profile_pic = models.FileField(default="", blank=True, null=True, )
-    mobile = models.CharField(max_length=15, unique=True)
     address = models.CharField(max_length=255, default="")
     verification = models.CharField(max_length=7)
     confirmed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.auth_user_id.username
+        return self.username
 
     def get_absolute_url(self):
         return reverse("login")
@@ -195,8 +181,8 @@ class DoctorTimes(models.Model):
 # Nurse Service
 class NurseService(models.Model):
     id = models.AutoField(primary_key=True)
-    nurse = models.ForeignKey(
-        NurseUser, on_delete=models.CASCADE, related_name="nurse_service"
+    nurse = models.ManyToManyField(
+        NurseUser
     )
     title = models.CharField(max_length=200)
     details = models.TextField(null=True)
@@ -211,6 +197,9 @@ class NurseService(models.Model):
 
 class NurseServiceTimes(models.Model):
     id = models.AutoField(primary_key=True)
+    nurse = models.ForeignKey(
+        NurseUser, on_delete=models.CASCADE, related_name="nurse_id_service"
+    )
     service = models.ForeignKey(
         NurseService, on_delete=models.CASCADE, related_name="nurse_service_time"
     )
@@ -302,10 +291,8 @@ class PharmacyMedicine(models.Model):
 # Physiotherapist Service
 class PhysiotherapistService(models.Model):
     id = models.AutoField(primary_key=True)
-    physiotherapist = models.ForeignKey(
+    physiotherapist = models.ManyToManyField(
         PhysiotherapistUser,
-        on_delete=models.CASCADE,
-        related_name="physiotherapist_service",
     )
     title = models.CharField(max_length=200)
     details = models.TextField(null=True)
@@ -320,6 +307,7 @@ class PhysiotherapistService(models.Model):
 
 class PhysiotherapistServiceTimes(models.Model):
     id = models.AutoField(primary_key=True)
+    physio = models.ForeignKey(PhysiotherapistUser, on_delete=models.CASCADE)
     service = models.ForeignKey(
         PhysiotherapistService,
         on_delete=models.CASCADE,
@@ -617,25 +605,25 @@ class OfferLabAnalytic(models.Model):
 # ==============================================================
 # Manage Users (1, "Admin"), (2, "Staff"), (3, "Doctor"), (4, "Nurse"), (5, "LapAdmin"), (6, "PharmacyAdmin"),
 #                          (7, "Physiotherapist"), (8, "Patient")
-@receiver(post_save, sender=CustomUser)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        if instance.user_type == 1:
-            AdminUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 2:
-            StaffUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 3:
-            DoctorUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 4:
-            NurseUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 5:
-            LapUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 6:
-            PharmacyUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 7:
-            PhysiotherapistUser.objects.create(auth_user_id=instance)
-        if instance.user_type == 8:
-            PatientUser.objects.create(auth_user_id=instance)
+# @receiver(post_save, sender=CustomUser)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         if instance.user_type == 1:
+#             AdminUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 2:
+#             StaffUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 3:
+#             DoctorUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 4:
+#             NurseUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 5:
+#             LapUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 6:
+#             PharmacyUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 7:
+#             PhysiotherapistUser.objects.create(auth_user_id=instance)
+#         if instance.user_type == 8:
+#             PatientUser.objects.create(auth_user_id=instance)
 
 
 @receiver(post_save, sender=CustomUser)

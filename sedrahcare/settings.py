@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
-    "drf_spectacular",
+    'embed_video',
 ]
 
 SWAGGER_SETTINGS = {
@@ -137,9 +137,7 @@ DATABASES = {
         "PORT": "3306",
     }
 }
-
 """
-
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -152,8 +150,13 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+
+AUTHENTICATION_BACKENDS = [
+    # other backends...
+    'mobaderapp.custom_backend.MobileBackend',
+]
 
 
 COUNTRIES = (("Saudi Arabia", "Saudi Arabia"),)
@@ -245,8 +248,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "adminsedrahcare"
 EMAIL_HOST_PASSWORD = "MobaderEid123456@"
 
-SPECTACULAR_SETTINGS = {
-    "TITLE": "Mobader API V1",
-}
 
 # R3YUD7QY6S63LKAPYWRA5KWK Twilio Recovery Code

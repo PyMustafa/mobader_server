@@ -13,7 +13,7 @@ def user_login(request):
             cd = form.cleaned_data
             user = authenticate(
                 request,
-                username=cd["username"],
+                mobile=cd["mobile"],
                 password=cd["password"],
             )
             if user is not None:

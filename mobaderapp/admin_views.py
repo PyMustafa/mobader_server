@@ -227,44 +227,42 @@ class DoctorUserListView(ListView):
 class DoctorUpdate(UpdateView):
     model = DoctorUser
     success_message = "Doctor Updated!"
-    fields = ["price", "mobile_phone", "address"]
+    fields = ["price", "address"]
     template_name = "en/admin/doctors/doctor_update.html"
 
 
 class DoctorUserCreateView(SuccessMessageMixin, CreateView):
-    model = CustomUser
+    model = DoctorUser
     success_message = "Doctor Created!"
-    fields = ["first_name", "last_name", "username", "email", "password"]
+    fields = ["mobile", "password", "first_name", "last_name", "username", "email", "price", "address"]
     template_name = "en/admin/doctors/doctor_create.html"
 
     def get_context_data(self, **kwargs):
         context = super(DoctorUserCreateView, self).get_context_data(**kwargs)
         context["categories"] = DoctorCategory.objects.all()
         return context
-
+        
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.is_active = True
+        #user.is_active = True
         user.user_type = 3
         user.set_password(form.cleaned_data["password"])
-        user.save()
+        #user.save()
         # Saving Doctor User
         profile_pic = self.request.FILES["profile_pic"]
         fs = FileSystemStorage()
         filename = fs.save(profile_pic.name, profile_pic)
-        profile_pic_url = fs.url(filename)
+        profile_pic_url = filename
 
-        user.doctoruser.profile_pic = profile_pic_url
-        user.doctoruser.category_id = DoctorCategory.objects.filter(
+        user.profile_pic = profile_pic_url
+        user.category_id = DoctorCategory.objects.filter(
             id=self.request.POST.get("category")
         ).first()
-        user.doctoruser.price = self.request.POST.get("price")
-        user.doctoruser.hospital_name = self.request.POST.get("hospital_name")
-        user.doctoruser.mobile_phone = self.request.POST.get("mobile_phone")
-        user.doctoruser.address = self.request.POST.get("address")
-        user.doctoruser.save()
+        user.save()
         messages.success(self.request, "Doctor Created Successfully")
         return HttpResponseRedirect(reverse("doctor_list"))
+
+    
 
 
 # ========================================================

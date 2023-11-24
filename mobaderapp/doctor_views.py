@@ -27,7 +27,8 @@ class AppointmentListView(ListView):
         context = super().get_context_data(**kwargs)
         d = get_date(self.request.GET.get("month", None))
         cal = Calendar(d.year, d.month)
-        html_cal = cal.formatmonth(withyear=True)
+        doctor = DoctorUser.objects.get(customuser_ptr_id=self.request.user.id)
+        html_cal = cal.formatmonth(doctor=doctor, withyear=True)
         context["calendar"] = mark_safe(html_cal)
         context["prev_month"] = prev_month(d)
         context["next_month"] = next_month(d)
@@ -57,7 +58,7 @@ def next_month(d):
 
 
 def event(request, event_id=None):
-    doctor = DoctorUser.objects.get(auth_user_id=request.user.id)
+    doctor = DoctorUser.objects.get(customuser_ptr_id=request.user.id)
     instance = DoctorTimes(doctor=doctor)
     if event_id:
         instance = get_object_or_404(DoctorTimes, pk=event_id)
