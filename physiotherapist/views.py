@@ -25,10 +25,10 @@ class ServicesCreate(SuccessMessageMixin, CreateView):
     
     def form_valid(self, form):
         service = form.save(commit=False)
-        service.physiotherapist = PhysiotherapistUser.objects.get(
-            auth_user_id=self.request.user.id
-        )
+        physio_instance = PhysiotherapistUser.objects.get(id=self.request.user.id)
         service.save()
+        service.physiotherapist.set([physio_instance])
+
         messages.success(self.request, "Service Created Successfully")
         return HttpResponseRedirect(reverse("physio_services_list"))
 
@@ -80,6 +80,7 @@ class ServicesTimesCreate(SuccessMessageMixin, CreateView):
         service_time.service = PhysiotherapistService.objects.get(
             id=self.request.POST.get('service')
         )
+        service_time.physio = PhysiotherapistUser.objects.get(id=self.request.user.id)
         service_time.active = True
         service_time.save()
         messages.success(self.request, "Service Time Created Successfully")
@@ -106,7 +107,7 @@ class ServiceTimeDeleteView(DeleteView):
 def booking_pending(request):
     context = {}
     physio = PhysiotherapistUser.objects.get(
-        auth_user_id = request.user.id
+        id = request.user.id
     )
     book_physio = BookPhysio.objects.filter(
         physio_id = physio.id, 
@@ -118,7 +119,7 @@ def booking_pending(request):
 def booking_list(request):
     context = {}
     physio = PhysiotherapistUser.objects.get(
-        auth_user_id = request.user.id
+        id = request.user.id
     )
     book_physio = BookPhysio.objects.filter(
         physio_id = physio.id

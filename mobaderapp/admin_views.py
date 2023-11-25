@@ -397,12 +397,12 @@ class PhysiotherapistUserListView(ListView):
 class PhysiotherapistUpdate(UpdateView):
     model = PhysiotherapistUser
     success_message = "Physiotherapist Updated!"
-    fields = ["mobile_phone", "address"]
+    fields = ["mobile", "address"]
     template_name = "en/admin/physio/physio_update.html"
 
 
 class PhysiotherapistUserCreateView(SuccessMessageMixin, CreateView):
-    model = CustomUser
+    model = PhysiotherapistUser
     success_message = "Physiotherapist Created!"
     fields = ["first_name", "last_name", "username", "email", "password"]
     template_name = "en/admin/physio/physio_create.html"
@@ -412,18 +412,18 @@ class PhysiotherapistUserCreateView(SuccessMessageMixin, CreateView):
         user.is_active = True
         user.user_type = 7
         user.set_password(form.cleaned_data["password"])
-        user.save()
+
         # ========================
         profile_pic = self.request.FILES["profile_pic"]
         fs = FileSystemStorage()
         filename = fs.save(profile_pic.name, profile_pic)
         profile_pic_url = fs.url(filename)
 
-        user.physiotherapistuser.profile_pic = profile_pic_url
-        user.physiotherapistuser.hospital_name = self.request.POST.get("hospital_name")
-        user.physiotherapistuser.mobile_phone = self.request.POST.get("mobile_phone")
-        user.physiotherapistuser.address = self.request.POST.get("address")
-        user.physiotherapistuser.save()
+        user.profile_pic = profile_pic_url
+        user.hospital_name = self.request.POST.get("hospital_name")
+        user.mobile = self.request.POST.get("mobile_phone")
+        user.address = self.request.POST.get("address")
+        user.save()
         messages.success(self.request, "Physiotherapist Created Successfully")
         return HttpResponseRedirect(reverse("physio_list"))
 

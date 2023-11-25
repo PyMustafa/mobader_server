@@ -287,9 +287,10 @@ def book_physio(request):
         if request.user.id:
             request.POST = request.POST.dict()
             booking = BookPhysio()
-            booking.patient = PatientUser.objects.filter(
+            patient = PatientUser.objects.filter(
                 customuser_ptr_id=request.user.id
             ).first()
+            booking.patient = patient
             booking.physio = PhysiotherapistUser.objects.get(
                 id=request.POST["physio_pk"]
             )
@@ -300,33 +301,22 @@ def book_physio(request):
                 id=request.POST["booking_slot"]
             )
             booking.status = "PEN"
+            book_model = "BookPhysio"
+
             if request.POST.get("payment_stripe"):
-                stripe_service_name = "SedrahCare Physiotherapist Visit"
                 price = booking.service.price
                 current_site = get_current_site(request)
-                stripe.api_key = settings.STRIPE_SECRETKEY
-                checkout_session = stripe.checkout.Session.create(
-                    payment_method_types=["card"],
-                    line_items=[
-                        {
-                            "price_data": {
-                                "product_data": {"name": stripe_service_name},
-                                "currency": "sar",
-                                "unit_amount": int(price) * 100,
-                            },
-                            "quantity": 1,
-                        },
-                    ],
-                    mode="payment",
-                    customer_creation="always",
-                    success_url=f"http://{current_site}/user/verify_order?status=success&pk={booking.pk}",
-                    cancel_url=f"http://{current_site}/user/verify_order?status=failed&pk={booking.pk}",
-                )
-                booking.status = "PEN"
-                booking.time.active = False
-                booking.time.save()
-                booking.save()
-                return redirect(checkout_session.url, code=303)
+                payment_response = create_tap_payment_session(patient, price, book_model)
+                payment_status_code = payment_response.status_code
+
+                if payment_status_code == 200:
+                    payment_response_data = payment_response.json()
+                    print(f'payment_response_data: {payment_response_data}')
+                    booking.time.active = False
+                    booking.time.save()
+                    booking.save()
+                    redirect_url = payment_response_data['transaction']['url']
+                    return redirect(redirect_url, code=303)
             else:
                 booking.time.active = False
                 booking.time.save()
@@ -646,17 +636,17 @@ def list_nurses(request):
     if request.method == "POST":
         context = {"nurses": []}
         data = json.loads(request.body)
-        print(f'data>>>>>>>>: {data}')
         try:
             service = NurseService.objects.get(id=data["service_id"])
-            nurses = nurses = service.nurse.all()
+            nurses = service.nurse.all()
+            print(f'nurses: {nurses}')
 
             for nurse in nurses:
                 try:
                     photo = str(nurse.profile_pic)
                 except:
                     photo = None
-                nurse_name = str(nurse.id)
+                nurse_name = str(nurse.username)
                 context["nurses"].append(
                     {
                         "price": service.price,
@@ -678,29 +668,38 @@ def list_physio(request):
     if request.method == "POST":
         context = {"physios": []}
         data = json.loads(request.body)
+        print(f'data>>>>>>: {data}')
 
         try:
             service = PhysiotherapistService.objects.get(id=data["service_id"])
-            physios = PhysiotherapistUser.objects.filter(id=service.physiotherapist_id)
+            physios = service.physiotherapist.all()
+            print(f'physios: {physios}')
 
             for physio in physios:
+                print("start the for loop")
                 try:
                     photo = str(physio.profile_pic)
                 except:
                     photo = None
-                physio_name = str(physio.id)
+                print("after the try and except")
+                physio_name = str(physio.username)
+                print(f'physio_name: {physio_name}')
                 context["physios"].append(
+
                     {
                         "price": service.price,
-                        "phone": physio.mobile_phone,
+
+                        "phone": physio.mobile,
                         "address": physio.address,
                         "name": physio_name,
                         "photo": photo,
                         "id": physio.id,
                     }
                 )
+                print(f'context>>>: {context}')
             return JsonResponse(context)
         except Exception as err:
+            print(err)
             return JsonResponse({"error": "invalid params"}, status=404)
     return JsonResponse({"error": "invalid method"}, status=405)
 
