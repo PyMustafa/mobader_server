@@ -1,21 +1,19 @@
-from datetime import datetime
 import json
 import random
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
+
 import requests
 import stripe
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin, messages
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
-from rest_framework.views import APIView
 
 from mobaderapp.backend_views import create_tap_payment_session, retrieve_charge, payment_is_approved
 from mobaderapp.forms import (
@@ -26,7 +24,6 @@ from mobaderapp.forms import (
     ServiceVisitBookingMedicine, PatientUserForm,
 )
 from mobaderapp.models import (
-    CustomUser,
     DoctorCategory,
     DoctorTimes,
     DoctorUser,
@@ -140,7 +137,7 @@ def dashboard(request):
     response_data = payment_status.json()
     if payment_is_approved(response_data):
         messages.success(
-            request, "Payment approved, please wait until the doctor accept the your booking request"
+            request, "Payment approved, please wait until the doctor accept your booking request"
         )
     else:
 
@@ -159,17 +156,12 @@ def dashboard(request):
     return render(request, "en/patient/home.html", context)
 
 
-
 # =================================================
 # All Services and Booking
 
 
 def all_services(request):
     return render(request, "en/patient/all_service.html")
-
-
-base_url = "https://mobader.sa"
-secret_key = 'sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW'
 
 
 def book_doctor(request):
@@ -233,79 +225,15 @@ def book_doctor(request):
     return render(request, "en/patient/doctor_visit.html", context)
 
 
-def book_doctor1(request):
-    if request.method == "POST":
-        if request.user.id:
-            print(f'user_id:{request.user.id}')
-            request.POST = request.POST.dict()
-            booking = BookDoctor()
-            booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
-            ).first()
-            print(f'booking.patient :{booking.patient}')
-            booking.doctor = DoctorUser.objects.get(id=request.POST["doctor_pk"])
-            book_time = DoctorTimes.objects.get(id=request.POST["booking_slot"])
-            booking.book_time = book_time
-            booking.status = "PEN"
-            if request.POST.get("payment_stripe"):
-                stripe_service_name = "SedrahCare Doctor Visit"
-                price = DoctorUser.objects.get(id=request.POST["doctor_pk"]).price
-                current_site = get_current_site(request)
-                stripe.api_key = settings.STRIPE_SECRETKEY
-                checkout_session = stripe.checkout.Session.create(
-                    payment_method_types=["card"],
-                    line_items=[
-                        {
-                            "price_data": {
-                                "product_data": {"name": stripe_service_name},
-                                "currency": "sar",
-                                "unit_amount": int(price) * 100,
-                            },
-                            "quantity": 1,
-                        },
-                    ],
-                    mode="payment",
-                    customer_creation="always",
-                    success_url=f"http://{current_site}/user/verify_order?status=success&pk={booking.pk}",
-                    cancel_url=f"http://{current_site}/user/verify_order?status=failed&pk={booking.pk}",
-                )
-                booking.status = "PEN"
-                book_time.active = False
-                book_time.save()
-                booking.save()
-                return redirect(checkout_session.url, code=303)
-            else:
-                book_time.active = False
-                book_time.save()
-                booking.status = "PEN"
-                booking.save()
-                messages.success(
-                    request, "Booking Completed, please wait until it accepted"
-                )
-                return redirect("patient_dashboard")
-        else:
-            return redirect("login")
-    booking_form = ServiceVisitBooking()
-    context = {}
-    context["patient"] = PatientUser.objects.filter(
-        id=request.user.id
-    ).first()
-    context["service_type"] = "Booking Doctor"
-    context["categories"] = DoctorCategory.objects.all()
-    context["doctors"] = DoctorUser.objects.all()
-    context["booking_form"] = booking_form
-
-    return render(request, "en/patient/doctor_visit.html", context)
-
-
 def book_nurse(request):
     if request.method == "POST":
         if request.user.id:
             request.POST = request.POST.dict()
             booking = BookNurse()
-            booking.patient = PatientUser.objects.filter(
-                customuser_ptr_id=request.user.id
+            patient = PatientUser.objects.filter(
+                id=request.user.id
             ).first()
+            booking.patient = patient
             booking.nurse = NurseUser.objects.get(id=request.POST["nurse_pk"])
             booking.service = NurseService.objects.get(
                 id=request.POST["category_class"]
@@ -314,33 +242,23 @@ def book_nurse(request):
                 id=request.POST["booking_slot"]
             )
             booking.status = "PEN"
+
+            book_model = "BookNurse"
+
             if request.POST.get("payment_stripe"):
-                stripe_service_name = "SedrahCare Nurse Visit"
                 price = booking.service.price
                 current_site = get_current_site(request)
-                stripe.api_key = settings.STRIPE_SECRETKEY
-                checkout_session = stripe.checkout.Session.create(
-                    payment_method_types=["card"],
-                    line_items=[
-                        {
-                            "price_data": {
-                                "product_data": {"name": stripe_service_name},
-                                "currency": "sar",
-                                "unit_amount": int(price) * 100,
-                            },
-                            "quantity": 1,
-                        },
-                    ],
-                    mode="payment",
-                    customer_creation="always",
-                    success_url=f"http://{current_site}/user/verify_order?status=success&pk={booking.pk}",
-                    cancel_url=f"http://{current_site}/user/verify_order?status=failed&pk={booking.pk}",
-                )
-                booking.status = "PEN"
-                booking.time.active = False
-                booking.time.save()
-                booking.save()
-                return redirect(checkout_session.url, code=303)
+                payment_response = create_tap_payment_session(patient, price, book_model)
+                payment_status_code = payment_response.status_code
+
+                if payment_status_code == 200:
+                    payment_response_data = payment_response.json()
+                    print(f'payment_response_data: {payment_response_data}')
+                    booking.time.active = False
+                    booking.time.save()
+                    booking.save()
+                    redirect_url = payment_response_data['transaction']['url']
+                    return redirect(redirect_url, code=303)
             else:
                 booking.time.active = False
                 booking.time.save()
@@ -438,7 +356,7 @@ def book_analytic(request):
             request.POST = request.POST.dict()
             booking = BookAnalytic()
             booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
+                id=request.user.id
             ).first()
             booking.lab = LabDetail.objects.get(id=request.POST["lab_pk"])
             booking.service = LabService.objects.get(id=request.POST["category_class"])
@@ -480,7 +398,7 @@ def book_analytic(request):
     booking_form = ServiceVisitBookingAnalytic()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-        auth_user_id=request.user.id
+        id=request.user.id
     ).first()
     context["service_type"] = "Booking Analytic"
     context["services"] = LabService.objects.all()
@@ -496,7 +414,7 @@ def book_medicine(request):
             print(request.POST)
             booking = BookMedicine()
             booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
+                id=request.user.id
             ).first()
             booking.pharma = PharmacyDetail.objects.get(
                 id=request.POST["category_class"]
@@ -547,7 +465,7 @@ def book_medicine(request):
     booking_form = ServiceVisitBookingMedicine()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-        auth_user_id=request.user.id
+        id=request.user.id
     ).first()
     context["service_type"] = "Booking Medicine"
     context["pharmas"] = PharmacyDetail.objects.all()
@@ -564,7 +482,7 @@ def book_meeting(request):
             booking = BookDoctor()
             # Get Patient
             booking.patient = PatientUser.objects.filter(
-                auth_user_id=request.user.id
+                id=request.user.id
             ).first()
             # Get Doctor
             booking.doctor = DoctorUser.objects.get(id=request.POST["doctor_pk"])
@@ -609,7 +527,7 @@ def book_meeting(request):
     booking_form = ServiceVisitBooking()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-        auth_user_id=request.user.id
+        id=request.user.id
     ).first()
     context["service_type"] = "Meeting Doctor"
     context["categories"] = DoctorCategory.objects.all()
@@ -728,16 +646,17 @@ def list_nurses(request):
     if request.method == "POST":
         context = {"nurses": []}
         data = json.loads(request.body)
+        print(f'data>>>>>>>>: {data}')
         try:
             service = NurseService.objects.get(id=data["service_id"])
-            nurses = NurseUser.objects.filter(id=service.nurse_id)
+            nurses = nurses = service.nurse.all()
 
             for nurse in nurses:
                 try:
                     photo = str(nurse.profile_pic)
                 except:
                     photo = None
-                nurse_name = str(nurse.auth_user_id)
+                nurse_name = str(nurse.id)
                 context["nurses"].append(
                     {
                         "price": service.price,
@@ -769,7 +688,7 @@ def list_physio(request):
                     photo = str(physio.profile_pic)
                 except:
                     photo = None
-                physio_name = str(physio.auth_user_id)
+                physio_name = str(physio.id)
                 context["physios"].append(
                     {
                         "price": service.price,

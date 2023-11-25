@@ -280,7 +280,7 @@ class NurseUpdate(UpdateView):
 
 
 class NurseUserCreateView(SuccessMessageMixin, CreateView):
-    model = CustomUser
+    model = NurseUser
     success_message = "Nurse Created!"
     fields = ["first_name", "last_name", "username", "email", "password"]
     template_name = "en/admin/nurses/nurse_create.html"
@@ -297,11 +297,11 @@ class NurseUserCreateView(SuccessMessageMixin, CreateView):
         filename = fs.save(profile_pic.name, profile_pic)
         profile_pic_url = fs.url(filename)
 
-        user.nurseuser.profile_pic = profile_pic_url
-        user.nurseuser.hospital_name = self.request.POST.get("hospital_name")
-        user.nurseuser.mobile = self.request.POST.get("mobile")
-        user.nurseuser.address = self.request.POST.get("address")
-        user.nurseuser.save()
+        user.profile_pic = profile_pic_url
+        user.hospital_name = self.request.POST.get("hospital_name")
+        user.mobile = self.request.POST.get("mobile")
+        user.address = self.request.POST.get("address")
+        user.save()
         messages.success(self.request, "Nurse Created Successfully")
         return HttpResponseRedirect(reverse("nurse_list"))
 

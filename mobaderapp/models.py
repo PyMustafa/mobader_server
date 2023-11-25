@@ -626,21 +626,21 @@ class OfferLabAnalytic(models.Model):
 #             PatientUser.objects.create(auth_user_id=instance)
 
 
-@receiver(post_save, sender=CustomUser)
-def save_user_profile(sender, instance, **kwargs):
-    if instance.user_type == 1:
-        instance.adminuser.save()
-    if instance.user_type == 2:
-        instance.staffuser.save()
-    if instance.user_type == 3:
-        instance.doctoruser.save()
-    if instance.user_type == 4:
-        instance.nurseuser.save()
-    if instance.user_type == 5:
-        instance.lapuser.save()
-    if instance.user_type == 6:
-        instance.pharmacyuser.save()
-    if instance.user_type == 7:
-        instance.physiotherapistuser.save()
-    if instance.user_type == 8:
-        instance.patientuser.save()
+# @receiver(post_save, sender=CustomUser)
+# def save_user_profile(sender, instance, **kwargs):
+#     if instance.user_type == 1:
+#         instance.adminuser.save()
+#     if instance.user_type == 2:
+#         instance.staffuser.save()
+#     if instance.user_type == 3:
+#         instance.doctoruser.save()
+#     if instance.user_type == 4:
+#         instance.nurseuser.save()
+#     if instance.user_type == 5:
+#         instance.lapuser.save()
+#     if instance.user_type == 6:
+#         instance.pharmacyuser.save()
+#     if instance.user_type == 7:
+#         instance.physiotherapistuser.save()
+#     if instance.user_type == 8:
+#         instance.patientuser.save()

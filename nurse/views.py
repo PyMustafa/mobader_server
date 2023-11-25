@@ -1,4 +1,4 @@
-from django.shortcuts import render 
+from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.messages.views import SuccessMessageMixin, messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 def dashboard(request):
     return render(request, "nurse/en/home.html")
 
+
 class ServicesListView(ListView):
     model = NurseService
     template_name = "nurse/en/service_list.html"
@@ -22,16 +23,18 @@ class ServicesCreate(SuccessMessageMixin, CreateView):
     fields = ["title", "details", "price"]
     template_name = "nurse/en/service_create.html"
 
-    
     def form_valid(self, form):
         service = form.save(commit=False)
-        service.nurse = NurseUser.objects.get(
-            auth_user_id=self.request.user.id
-        )
+
+        nurse_instance = NurseUser.objects.get(id=self.request.user.id)
+
+        # Save the service instance to get an ID
         service.save()
+
+        # Set the many-to-many relationship
+        service.nurse.set([nurse_instance])
         messages.success(self.request, "Service Created Successfully")
         return HttpResponseRedirect(reverse("nurse_services_list"))
-
 
 
 class ServicesUpdate(UpdateView):
@@ -51,7 +54,7 @@ class ServiceDeleteView(DeleteView):
 class ServicesTimesListView(ListView):
     model = NurseServiceTimes
     queryset = NurseServiceTimes.objects.filter(
-        active = True
+        active=True
     )
     template_name = "nurse/en/service_time_list.html"
 
@@ -72,24 +75,21 @@ class ServicesTimesCreate(SuccessMessageMixin, CreateView):
         context['services'] = NurseService.objects.all()
         return context
 
-    
     def form_valid(self, form):
         print(self.request.POST.get('service'))
         service_time = form.save(commit=False)
-        service_time.service = NurseService.objects.get(
-            id=self.request.POST.get('service')
-        )
+        service_time.service = NurseService.objects.get(id=self.request.POST.get('service'))
+        service_time.nurse = NurseUser.objects.get(id=self.request.user.id)  # Set the nurse_id
         service_time.active = True
         service_time.save()
         messages.success(self.request, "Service Time Created Successfully")
         return HttpResponseRedirect(reverse("nurse_services_times_list"))
 
 
-
 class ServicesTimeUpdate(UpdateView):
     model = NurseServiceTimes
     success_message = "Service Time Updated!"
-    fields = [ "day", "start_time", "end_time"]
+    fields = ["day", "start_time", "end_time"]
     template_name = "nurse/en/service_time_update.html"
 
 
@@ -99,29 +99,32 @@ class ServiceTimeDeleteView(DeleteView):
     template_name = "nurse/en/service_time_delete.html"
     success_url = reverse_lazy("nurse_services_times_list")
 
+
 # Bookings
 def booking_pending(request):
     context = {}
     nurse = NurseUser.objects.get(
-        auth_user_id = request.user.id
+        id=request.user.id
     )
     book_nurse = BookNurse.objects.filter(
-        nurse_id = nurse.id, 
-        status = "PEN"
+        nurse_id=nurse.id,
+        status="PEN"
     )
     context['booknurse'] = book_nurse
-    return render(request, "nurse/en/booking_pending.html", context) 
+    return render(request, "nurse/en/booking_pending.html", context)
+
 
 def booking_list(request):
     context = {}
     nurse = NurseUser.objects.get(
-        auth_user_id = request.user.id
+        id=request.user.id
     )
     book_nurse = BookNurse.objects.filter(
-        nurse_id = nurse.id
+        nurse_id=nurse.id
     )
     context['booknurse'] = book_nurse
     return render(request, "nurse/en/all_booking.html", context)
+
 
 class BookingUpdate(UpdateView):
     model = BookNurse
