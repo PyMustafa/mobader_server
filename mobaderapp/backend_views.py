@@ -42,7 +42,7 @@ def generate_otp() -> str:
     return x
 
 
-base_url = "https://mobader.sa"
+base_url = "https://784e-102-185-39-5.ngrok-free.app/"
 secret_key = 'sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW'
 
 
@@ -84,7 +84,7 @@ def create_tap_payment_session(patient, price, book_model):
         "merchant": {"id": "1234"},
         "source": {"id": "src_card"},
         "post": {"url": f"{base_url}api/v1/tap-webhook/"},
-        "redirect": {"url": base_url}
+        "redirect": {"url": f'{base_url}patient/dashboard/'}
     }
 
     headers = {
@@ -435,6 +435,7 @@ class BookDoctorCreateAPIView(generics.CreateAPIView):
                 }
                 book_time.active = False
                 book_time.save()
+                return Response(response_data, status=status.HTTP_200_OK)
         response_data = {
             "status": "success",
             "message": "Booking completed",
