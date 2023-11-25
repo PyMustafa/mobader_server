@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
 from rest_framework.views import APIView
 
-from mobaderapp.backend_views import create_tap_payment_session
+from mobaderapp.backend_views import create_tap_payment_session, retrieve_charge, payment_is_approved
 from mobaderapp.forms import (
     ServiceVisitBooking,
     ServiceVisitBookingNurse,
@@ -134,6 +134,20 @@ def confirm_account(request, phone):
 
 
 def dashboard(request):
+    tap_id = request.GET.get('tap_id')
+    print(f'tap_id>>>>>>>>>>>>>>>: {tap_id}')
+    payment_status = retrieve_charge(tap_id)
+    response_data = payment_status.json()
+    if payment_is_approved(response_data):
+        messages.success(
+            request, "Payment approved, please wait until the doctor accept the your booking request"
+        )
+    else:
+
+        messages.error(
+            request, "Payment not successful, check your card data. Booking completed and saved as unpaid. "
+        )
+
     context = {}
     context["categories"] = DoctorCategory.objects.all()
     context["doctors"] = DoctorUser.objects.all()
@@ -143,6 +157,7 @@ def dashboard(request):
     context["pharma"] = PharmacyDetail.objects.all()
 
     return render(request, "en/patient/home.html", context)
+
 
 
 # =================================================
@@ -158,7 +173,6 @@ secret_key = 'sk_test_ZtGvaAiXEhnV2cd7YkMQsSxW'
 
 
 def book_doctor(request):
-
     if request.method == "POST":
         if request.user.id:
             request.POST = request.POST.dict()
@@ -178,7 +192,6 @@ def book_doctor(request):
 
             booking.status = "PEN"
 
-
             book_model = "BookDoctor"
 
             if request.POST.get("payment_stripe"):
@@ -193,9 +206,6 @@ def book_doctor(request):
                     book_time.active = False
                     book_time.save()
                     booking.save()
-                    messages.success(
-                        request, "Booking Completed, please wait until it accepted"
-                    )
                     redirect_url = payment_response_data['transaction']['url']
                     return redirect(redirect_url, code=303)
 
@@ -211,13 +221,11 @@ def book_doctor(request):
         else:
             return redirect("login")
 
-
-
     booking_form = ServiceVisitBooking()
     context = {}
     context["patient"] = PatientUser.objects.filter(
-                id=request.user.id
-            ).first()
+        id=request.user.id
+    ).first()
     context["service_type"] = "Booking Doctor"
     context["categories"] = DoctorCategory.objects.all()
     context["doctors"] = DoctorUser.objects.all()
