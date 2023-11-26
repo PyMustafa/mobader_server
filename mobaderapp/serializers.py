@@ -54,6 +54,22 @@ class ResetPassSerializer(serializers.Serializer):
         help_text='Enter your password.')
 
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+class DoctorSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = models.DoctorUser
+        fields = ["id", 'username', 'first_name', 'last_name', "address", "mobile", "category_id", "price",
+                  "profile_pic"]
+
+
+class PatientSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = models.PatientUser
+        fields = ["id", 'username', 'first_name', 'last_name', "address", "mobile"]
+
+
 # =========================================================
 # doctors & booking doctor
 
@@ -83,24 +99,32 @@ class CategoryDoctorsSerializer(serializers.ModelSerializer):
 
 
 class DoctorBookingsSerializer(serializers.ModelSerializer):
+    doctor = DoctorSerializers()
+    patient = PatientSerializers()
+
     class Meta:
         model = BookDoctor
         fields = '__all__'
+        depth = 1
 
 
 # =========================================================
 # nurses & booking nurse
 
-class NurseBookingsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookNurse
-        fields = '__all__'
-
-
 class NurseSerializer(serializers.ModelSerializer):
     class Meta:
         model = NurseUser
+        fields = ["id", 'username', 'first_name', 'last_name', "address", "mobile", "profile_pic"]
+
+
+class NurseBookingsSerializer(serializers.ModelSerializer):
+    nurse = NurseSerializer()
+    patient = PatientSerializers()
+
+    class Meta:
+        model = BookNurse
         fields = '__all__'
+        depth = 1
 
 
 class NurseServiceSerializer(serializers.ModelSerializer):
@@ -138,17 +162,20 @@ class BookNurseSerializer(serializers.ModelSerializer):
 
 # =========================================================
 # Physiotherapist & booking Physiotherapist
-
-class PhysioBookingsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookPhysio
-        fields = '__all__'
-
-
 class PhysioUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhysiotherapistUser
+        fields = "id", 'username', 'first_name', 'last_name', "address", "mobile", "profile_pic"
+
+
+class PhysioBookingsSerializer(serializers.ModelSerializer):
+    physio = PhysioUserSerializer()
+    patient = PatientSerializers()
+
+    class Meta:
+        model = BookPhysio
         fields = '__all__'
+        depth = 1
 
 
 class PhysioServiceSerializer(serializers.ModelSerializer):
@@ -164,9 +191,20 @@ class PhysioServiceTimesSerializer(serializers.ModelSerializer):
 
 
 class BookPhysioSerializer(serializers.ModelSerializer):
+    is_paid = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = BookPhysio
-        fields = ['patient', 'physio', 'service', 'time']
+        fields = ['patient', 'physio', 'service', 'time', 'is_paid']
+
+    # we will remove this create method if we add is_paid field to the model
+    def create(self, validated_data):
+        is_paid = validated_data.pop('is_paid', False)
+        instance = super().create(validated_data)
+        # You can now do something with the is_paid value, for example:
+        instance.is_paid = is_paid
+        instance.save()
+        return instance
 
 
 # =========================================================
@@ -271,16 +309,6 @@ class SliderSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "thumbnail", "description"]
 
 
-class DoctorSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = models.DoctorUser
-        fields = ["id", "address", "mobile", "category_id", "price", "profile_pic"]
-
-    def __init__(self, *args, **kwargs):
-        super(DoctorSerializers, self).__init__(*args, **kwargs)
-        self.Meta.depth = 1
-
-
 class DoctorFilterSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.DoctorUser
@@ -305,16 +333,6 @@ class DoctorTimesSerializers(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(DoctorTimesSerializers, self).__init__(*args, **kwargs)
-        self.Meta.depth = 1
-
-
-class PatientSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = models.PatientUser
-        fields = ["id", "address", "mobile"]
-
-    def __init__(self, *args, **kwargs):
-        super(PatientSerializers, self).__init__(*args, **kwargs)
         self.Meta.depth = 1
 
 

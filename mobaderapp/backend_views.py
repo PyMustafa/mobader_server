@@ -630,9 +630,10 @@ class BookPhysioAPIView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
+        is_paid = request.data.get("is_paid")
         patient = PatientUser.objects.filter(id=request.data.get("patient")).first()
-        service = PhysiotherapistService.objects.filter(id=request.data.get("service")).first()
+        service = PhysiotherapistService.objects.get(id=request.data.get("service"))
+        price = service.price
         physio = PhysiotherapistUser.objects.get(id=request.data.get("physio"))
         time = PhysiotherapistServiceTimes.objects.get(id=request.data.get("time"))
 
@@ -643,11 +644,40 @@ class BookPhysioAPIView(generics.CreateAPIView):
             time=time,
             status="PEN",
         )
+        booking_data = BookPhysioSerializer(booking).data
         time.active = False
         time.save()
+        book_model = "BookPhysio"
 
-        #  handling payment using Stripe
-        return Response({"message": "Booking completed"}, status=status.HTTP_201_CREATED)
+        if is_paid:
+            payment_response = create_tap_payment_session(patient, price, book_model)
+            payment_status_code = payment_response.status_code
+
+            if payment_status_code == 200:
+                payment_response_data = payment_response.json()
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Payment completed",
+                    "payment_response_data": payment_response_data,
+                    "booking_data": booking_data
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Booking completed",
+                    "price": price,
+                    "booking_data": booking_data
+                }
+
+                return Response(response_data, status=status.HTTP_200_OK)
+        response_data = {
+            "status": "success",
+            "message": "Booking completed",
+            "price": price,
+            "booking_data": booking_data
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class PhysioBookingsListAPIView(generics.ListAPIView):
