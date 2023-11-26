@@ -788,7 +788,10 @@ class BookAnalyticAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         patient = PatientUser.objects.filter(id=request.data.get("patient")).first()
-        service = LabService.objects.filter(id=request.data.get("service")).first()
+        service = LabService.objects.get(id=request.data.get("service"))
+        is_paid = request.data.get("is_paid")
+
+        price = service.price
         lab = LabDetail.objects.get(id=request.data.get("lab"))
 
         booking = serializer.save(
@@ -797,8 +800,39 @@ class BookAnalyticAPIView(generics.CreateAPIView):
             lab=lab,
             status="PEN",
         )
-        #  handling payment using Stripe
-        return Response({"status": "success", "message": "Booking completed"}, status=status.HTTP_201_CREATED)
+        booking_data = BookAnalyticSerializer(booking).data
+
+        book_model = "BookLab"
+
+        if is_paid:
+            payment_response = create_tap_payment_session(patient, price, book_model)
+            payment_status_code = payment_response.status_code
+
+            if payment_status_code == 200:
+                payment_response_data = payment_response.json()
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Payment completed",
+                    "payment_response_data": payment_response_data,
+                    "booking_data": booking_data
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Booking completed",
+                    "price": price,
+                    "booking_data": booking_data
+                }
+
+                return Response(response_data, status=status.HTTP_200_OK)
+        response_data = {
+            "status": "success",
+            "message": "Booking completed",
+            "price": price,
+            "booking_data": booking_data
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class LabBookingsListAPIView(generics.ListAPIView):
