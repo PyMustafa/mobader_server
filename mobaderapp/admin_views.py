@@ -321,7 +321,7 @@ class LabUpdate(UpdateView):
 
 
 class LabUserCreateView(SuccessMessageMixin, CreateView):
-    model = CustomUser
+    model = LapUser
     success_message = "Lap Admin Created!"
     fields = ["first_name", "last_name", "username", "email", "password"]
     template_name = "en/admin/lab/lab_create.html"
@@ -339,10 +339,10 @@ class LabUserCreateView(SuccessMessageMixin, CreateView):
         filename = fs.save(profile_pic.name, profile_pic)
         profile_pic_url = fs.url(filename)
 
-        user.lapuser.profile_pic = profile_pic_url
-        user.lapuser.mobile = self.request.POST.get("mobile")
-        user.lapuser.address = self.request.POST.get("address")
-        user.lapuser.save()
+        user.profile_pic = profile_pic_url
+        user.mobile = self.request.POST.get("mobile")
+        user.address = self.request.POST.get("address")
+        user.save()
         messages.success(self.request, "Lab Admin Created Successfully")
         return HttpResponseRedirect(reverse("lab_list"))
 

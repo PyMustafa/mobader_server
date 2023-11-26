@@ -27,8 +27,8 @@ class ServicesCreate(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         service = form.save(commit=False)
         service.lap = LabDetail.objects.get(
-            admin_id= LapUser.objects.get(
-            auth_user_id=self.request.user.id
+            admin= LapUser.objects.get(
+            id=self.request.user.id
         )
         )
         service.save()
@@ -67,7 +67,7 @@ class LabDetailCreate(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         lab_detail = form.save(commit=False)
         lab_detail.admin = LapUser.objects.get(
-            auth_user_id=self.request.user.id
+            id=self.request.user.id
         )
         lab_detail.save()
         messages.success(self.request, "Laboratory Created Successfully")

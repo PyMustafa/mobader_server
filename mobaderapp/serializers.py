@@ -120,9 +120,20 @@ class NurseServiceTimesSerializer(serializers.ModelSerializer):
 
 
 class BookNurseSerializer(serializers.ModelSerializer):
+    is_paid = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = BookNurse
-        fields = ['patient', 'service', 'nurse', 'time']
+        fields = ['patient', 'service', 'nurse', 'time', 'is_paid']
+
+    # we will remove this create method if we add is_paid field to the model
+    def create(self, validated_data):
+        is_paid = validated_data.pop('is_paid', False)
+        instance = super().create(validated_data)
+        # You can now do something with the is_paid value, for example:
+        instance.is_paid = is_paid
+        instance.save()
+        return instance
 
 
 # =========================================================
@@ -216,7 +227,6 @@ class AnalyticBookingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookAnalytic
         fields = '__all__'
-
 
 
 # Offers ==========================

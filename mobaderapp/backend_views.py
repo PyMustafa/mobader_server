@@ -408,9 +408,11 @@ class BookDoctorCreateAPIView(generics.CreateAPIView):
             status="PEN",
         )
         booking_data = BookDoctorSerializer(booking).data
-
+        book_time.active = False
+        book_time.save()
         # open tap payment session
         book_model = "BookDoctor"
+
         if is_paid:
             payment_response = create_tap_payment_session(patient, price, book_model)
             payment_status_code = payment_response.status_code
@@ -423,8 +425,6 @@ class BookDoctorCreateAPIView(generics.CreateAPIView):
                     "payment_response_data": payment_response_data,
                     "booking_data": booking_data
                 }
-                book_time.active = False
-                book_time.save()
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
                 response_data = {
@@ -433,8 +433,7 @@ class BookDoctorCreateAPIView(generics.CreateAPIView):
                     "price": price,
                     "booking_data": booking_data
                 }
-                book_time.active = False
-                book_time.save()
+
                 return Response(response_data, status=status.HTTP_200_OK)
         response_data = {
             "status": "success",
@@ -442,9 +441,6 @@ class BookDoctorCreateAPIView(generics.CreateAPIView):
             "price": price,
             "booking_data": booking_data
         }
-        book_time.active = False
-        book_time.save()
-
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
@@ -501,7 +497,7 @@ class LabOffersRetrieveAPIView(generics.RetrieveAPIView):
     queryset = OfferNurseService.objects.all()
 
 
-# =========================================================
+# Book Nurse ==========================================
 class NurseListAPIView(generics.ListAPIView):
     queryset = NurseUser.objects.all()
     serializer_class = NurseSerializer
@@ -538,10 +534,11 @@ class BookNurseAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         patient = PatientUser.objects.filter(id=request.data.get("patient")).first()
-        service = NurseService.objects.filter(id=request.data.get("service")).first()
+        service = NurseService.objects.get(id=request.data.get("service"))
+        price = service.price
         nurse = NurseUser.objects.get(id=request.data.get("nurse"))
         time = NurseServiceTimes.objects.get(id=request.data.get("time"))
-
+        is_paid = request.data.get("is_paid")
         booking = serializer.save(
             patient=patient,
             service=service,
@@ -552,8 +549,38 @@ class BookNurseAPIView(generics.CreateAPIView):
         time.active = False
         time.save()
 
-        #  handling payment using Stripe
-        return Response({"message": "Booking completed"}, status=status.HTTP_201_CREATED)
+        booking_data = BookNurseSerializer(booking).data
+
+        book_model = "BookNurse"
+        if is_paid:
+            payment_response = create_tap_payment_session(patient, price, book_model)
+            payment_status_code = payment_response.status_code
+
+            if payment_status_code == 200:
+                payment_response_data = payment_response.json()
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Payment completed",
+                    "payment_response_data": payment_response_data,
+                    "booking_data": booking_data
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                response_data = {
+                    "status": payment_status_code,
+                    "message": "Booking completed",
+                    "price": price,
+                    "booking_data": booking_data
+                }
+
+                return Response(response_data, status=status.HTTP_200_OK)
+        response_data = {
+            "status": "success",
+            "message": "Booking completed",
+            "price": price,
+            "booking_data": booking_data
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class NurseBookingsListAPIView(generics.ListAPIView):
