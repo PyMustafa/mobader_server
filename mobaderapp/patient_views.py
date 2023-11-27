@@ -128,22 +128,28 @@ def confirm_account(request, phone):
 
 # =================================================
 # Dashboard
+@login_required()
+def patient_profile(request):
+
+    return render(request, "en/patient/profile.html")
 
 
+@login_required()
 def dashboard(request):
     tap_id = request.GET.get('tap_id')
     print(f'tap_id>>>>>>>>>>>>>>>: {tap_id}')
-    payment_status = retrieve_charge(tap_id)
-    response_data = payment_status.json()
-    if payment_is_approved(response_data):
-        messages.success(
-            request, "Payment approved, please wait until the doctor accept your booking request"
-        )
-    else:
+    if tap_id:
+        payment_status = retrieve_charge(tap_id)
+        response_data = payment_status.json()
+        if payment_is_approved(response_data):
+            messages.success(
+                request, "Payment confirmed. Kindly await approval for your booking request."
+            )
+        else:
 
-        messages.error(
-            request, "Payment not successful, check your card data. Booking completed and saved as unpaid. "
-        )
+            messages.error(
+                request, "Payment not successful, check your card data. Booking completed and saved as unpaid. "
+            )
 
     context = {}
     context["categories"] = DoctorCategory.objects.all()

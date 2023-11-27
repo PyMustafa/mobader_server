@@ -644,3 +644,20 @@ class OfferLabAnalytic(models.Model):
 #         instance.physiotherapistuser.save()
 #     if instance.user_type == 8:
 #         instance.patientuser.save()
+class PatientProfile(models.Model):
+    # oneToOne relationship, means that for any user, there is just one profile
+    user = models.OneToOneField(PatientUser, on_delete=models.CASCADE)
+    bio = models.TextField(max_length=100, blank=True)
+
+
+
+    '''
+    media settings:
+    - create media folder in the base directory
+    - media in settings.py
+     * MEDIA_URL = '/media/'
+     * MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    '''
+
+    def __str__(self):
+        return f'{self.user.username} profile'

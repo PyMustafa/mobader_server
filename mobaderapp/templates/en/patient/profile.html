@@ -1,0 +1,39 @@
+{% extends 'en/patient/base_template.html' %}
+{% load static %}
+
+<!-- BLOCK FOR TITLE-->
+{% block title %}
+Patient Profile
+{% endblock title %}
+<!-- END BLOCK FOR TITLE-->
+
+<!-- BLOCK FOR CUSTOM CSS-->
+{% block custom_css %}
+<link rel="stylesheet" href="{% static '/modules/fullcalendar/fullcalendar.min.css' %}">
+{% endblock custom_css %}
+<!-- END BLOCK FOR CUSTOM CSS-->
+
+<!-- BLOCK FOR PAGE TITLE-->
+{% block page_title %}
+Patient Profile
+{% endblock page_title %}
+<!-- END BLOCK FOR PAGE TITLE-->
+
+<!-- BLOCK FOR PAGE MAIN CONTENT-->
+{% block page_content %}
+    <img class="rounded-circle profile-pic" src="" alt="profile_pic">
+    <h2>Patient Info</h2>
+    <h5>Name: {{ user.first_name }} {{ user.last_name }}</h5>
+    <h5>Username: {{ user.username }}</h5>
+    <h5>Mobile_phone: {{ user.mobile }}</h5>
+    <h5>Address: {{ user.address }}</h5>
+
+
+
+{% endblock page_content %}
+<!-- END BLOCK FOR PAGE MAIN CONTENT-->
+
+<!-- BLOCK FOR CUSTOM JS-->
+{% block custom_js %}
+{% endblock custom_js %}
+<!-- END BLOCK FOR CUSTOM JS-->

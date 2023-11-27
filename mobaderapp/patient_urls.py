@@ -27,6 +27,12 @@ urlpatterns = [
         patient_views.dashboard,
         name="patient_dashboard",
     ),
+    path(
+        "profile/",
+        patient_views.patient_profile,
+        name="patient_dashboard",
+    ),
+
     # =================================================
     # All Services and Booking
     path(
